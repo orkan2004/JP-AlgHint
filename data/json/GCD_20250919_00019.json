@@ -1,5 +1,5 @@
 {
-  "id": "GCD_20250919_00001",
+  "id": "GCD_20250919_00019",
   "task": "gcd",
   "statement_ja": "整数 a, b が与えられる。a と b の最大公約数を求めよ。",
   "io_spec": {
@@ -7,17 +7,17 @@
     "output": "gcd(a,b)"
   },
   "instance": {
-    "seed": 1,
+    "seed": 19,
     "template_id": "GCD_T1",
     "params": {
-      "a": 618648,
-      "b": 829565
+      "a": 555438,
+      "b": 546664
     }
   },
   "tests": [
     {
-      "in": "618648 829565\n",
-      "out": "1\n"
+      "in": "555438 546664\n",
+      "out": "2\n"
     }
   ],
   "reference": {
@@ -44,7 +44,7 @@
     }
   ],
   "witness": {
-    "opt_value": 1
+    "opt_value": 2
   },
   "difficulty": {
     "score": 0.2,
