@@ -8,13 +8,17 @@ def new_id(seq:int):
 
 def make_item(a:int,b:int,seq:int)->dict:
     g = math.gcd(a,b)
+    tests = [
+        {"in": f"{a} {b}\n", "out": f"{g}\n"},
+        {"in": f"{b} {a}\n", "out": f"{g}\n"}   # ← 反転ケースを追加して minItems=2 を満たす
+    ]
     return {
       "id": new_id(seq),
       "task": "gcd",
       "statement_ja": "整数 a, b が与えられる。a と b の最大公約数を求めよ。",
       "io_spec": {"input":"a b","output":"gcd(a,b)"},
       "instance": {"seed": seq, "template_id":"GCD_T1", "params":{"a":a,"b":b}},
-      "tests": [{"in": f"{a} {b}\n", "out": f"{g}\n"}],
+      "tests": tests,
       "reference": {"py":"ref/py/gcd.py"},
       "hints": [
         {"level":1,"text":"ユークリッドの互除法を思い出そう。"},
