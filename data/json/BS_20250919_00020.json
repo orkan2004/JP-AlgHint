@@ -1,0 +1,62 @@
+{
+  "id": "BS_20250919_00020",
+  "task": "binary_search",
+  "statement_ja": "長さ n の昇順配列と値 x が与えられる。x が存在すれば 1、なければ 0 を出力せよ。",
+  "io_spec": {
+    "input": "n\\nA_1 ... A_n\\nx",
+    "output": "1 or 0"
+  },
+  "instance": {
+    "seed": 20,
+    "template_id": "BS_T1",
+    "params": {
+      "n": 13
+    }
+  },
+  "tests": [
+    {
+      "in": "13\n14530 23857 126998 356213 456825 468470 493174 607191 684824 688163 706504 786825 861623\n456825\n",
+      "out": "1\n"
+    },
+    {
+      "in": "13\n14530 23857 126998 356213 456825 468470 493174 607191 684824 688163 706504 786825 861623\n282688\n",
+      "out": "0\n"
+    }
+  ],
+  "reference": {
+    "py": "ref/py/binary_search.py"
+  },
+  "hints": [
+    {
+      "level": 1,
+      "text": "配列は昇順。中央要素と x を比較し、探索区間を半分にせよ。"
+    },
+    {
+      "level": 2,
+      "text": "左端 l、右端 r（半開区間や閉区間のどちらか）を一貫して保つ。"
+    },
+    {
+      "level": 3,
+      "text": "bisect_left の挙動：最左の挿入位置 i を得て、A[i]==x なら発見。"
+    }
+  ],
+  "distractors": [
+    {
+      "code": "OFF_BY_ONE",
+      "desc": "区間が閉/半開の取り違えで1つ外す"
+    }
+  ],
+  "witness": {
+    "present_value": 456825,
+    "absent_value": 282688
+  },
+  "difficulty": {
+    "score": 0.3,
+    "basis": "log2(n) 回の分岐"
+  },
+  "tags": [
+    "search",
+    "beginner"
+  ],
+  "license": "CC BY-SA 4.0 (texts) / MIT (code)"
+}
