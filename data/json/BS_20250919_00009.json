@@ -1,6 +1,6 @@
-{
+﻿{
   "id": "BS_20250919_00009",
-  "task": "binary_search",
+  "task": "binary_search_exist",
   "statement_ja": "長さ n の昇順配列と値 x が与えられる。x が存在すれば 1、なければ 0 を出力せよ。",
   "io_spec": {
     "input": "n\\nA_1 ... A_n\\nx",
@@ -24,7 +24,7 @@
     }
   ],
   "reference": {
-    "py": "ref/py/binary_search.py"
+    "py": "ref/py/bs_exist.py"
   },
   "hints": [
     {
