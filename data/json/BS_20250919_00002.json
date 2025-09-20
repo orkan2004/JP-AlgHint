@@ -48,7 +48,12 @@
   ],
   "witness": {
     "present_value": 132935,
-    "absent_value": 179768
+    "absent_value": 179768,
+    "counterexample_off_by_one": {
+      "in": "5\n1 3 5 7 9\n9\n",
+      "expected_out": "1\n",
+      "desc": "上端の更新(r=mid)などの境界バグで、末尾一致を取り逃す典型。"
+    }
   },
   "difficulty": {
     "score": 0.3,

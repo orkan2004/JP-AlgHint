@@ -76,7 +76,12 @@
       11,
       1,
       12
-    ]
+    ],
+    "counterexample_end_exclusive": {
+      "in": "2\n0 10\n10 20\n",
+      "expected_out": "2\n",
+      "desc": ">= を > と誤ると 2 本選べなくなる。半開/閉区間の取り違え。"
+    }
   },
   "difficulty": {
     "score": 0.35,
