@@ -1,0 +1,102 @@
+{
+  "id": "MST_20250920_00030",
+  "version": "1.0",
+  "lang": "ja",
+  "task_family": "mst_kruskal",
+  "answer_type": "int",
+  "task": "mst_kruskal",
+  "statement_ja": "重み付き無向グラフの最小全域木の重み合計を求めよ。連結でない場合は -1。",
+  "io_spec": {
+    "input": "n m\\n(u v w)×m（1-indexed）",
+    "output": "MST重み合計または -1"
+  },
+  "instance": {
+    "seed": 30,
+    "template_id": "MST_T1",
+    "params": {
+      "n": 12
+    }
+  },
+  "tests": [
+    {
+      "in": "12 21\n5 10 714\n8 12 577\n1 9 525\n4 5 572\n3 9 486\n8 11 475\n2 4 366\n1 2 220\n10 11 381\n2 7 824\n1 5 573\n7 12 885\n6 10 88\n3 5 272\n9 12 949\n2 3 136\n11 12 368\n2 6 203\n2 12 152\n1 10 871\n7 8 637\n",
+      "out": "3403\n"
+    },
+    {
+      "in": "12 21\n5 10 50\n8 12 52\n1 9 59\n4 5 172\n3 9 847\n8 11 83\n2 4 54\n1 2 765\n10 11 549\n2 7 536\n1 5 42\n7 12 142\n6 10 996\n3 5 50\n9 12 129\n2 3 801\n11 12 699\n2 6 359\n2 12 49\n1 10 52\n7 8 863\n",
+      "out": "1069\n"
+    }
+  ],
+  "reference": {
+    "py": "ref/py/mst_kruskal.py"
+  },
+  "hints": [
+    {
+      "level": 1,
+      "text": "辺を重み昇順に並べ、サイクルを作らないものだけ採用（Kruskal）。"
+    },
+    {
+      "level": 2,
+      "text": "サイクル判定にUnion-Findを使う。採用数が n-1 に達したら終了。"
+    },
+    {
+      "level": 3,
+      "text": "重みが同じでも動くように比較は w のみ。"
+    }
+  ],
+  "distractors": [
+    {
+      "code": "WRONG_SORT_KEY",
+      "desc": "w以外でソート"
+    },
+    {
+      "code": "CYCLE_FILTER_MISS",
+      "desc": "サイクル検出を忘れる"
+    },
+    {
+      "code": "UNION_ORDER_BUG",
+      "desc": "併合の大小関係を誤る"
+    }
+  ],
+  "witness": {
+    "mst_weight_t1": 3403,
+    "chosen_edges_t1": [
+      12,
+      15,
+      18,
+      17,
+      7,
+      13,
+      6,
+      16,
+      5,
+      4,
+      20
+    ],
+    "mst_weight_t2": 1069,
+    "chosen_edges_t2": [
+      10,
+      18,
+      13,
+      0,
+      1,
+      6,
+      2,
+      5,
+      14,
+      11,
+      17
+    ]
+  },
+  "difficulty": {
+    "score": 0.45,
+    "basis": "Kruskal + DSU"
+  },
+  "tags": [
+    "graph",
+    "mst",
+    "dsu",
+    "intermediate"
+  ],
+  "license": "CC BY-SA 4.0 (texts) / MIT (code)"
+}

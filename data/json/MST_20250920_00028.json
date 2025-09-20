@@ -1,0 +1,102 @@
+{
+  "id": "MST_20250920_00028",
+  "version": "1.0",
+  "lang": "ja",
+  "task_family": "mst_kruskal",
+  "answer_type": "int",
+  "task": "mst_kruskal",
+  "statement_ja": "重み付き無向グラフの最小全域木の重み合計を求めよ。連結でない場合は -1。",
+  "io_spec": {
+    "input": "n m\\n(u v w)×m（1-indexed）",
+    "output": "MST重み合計または -1"
+  },
+  "instance": {
+    "seed": 28,
+    "template_id": "MST_T1",
+    "params": {
+      "n": 12
+    }
+  },
+  "tests": [
+    {
+      "in": "12 17\n4 10 963\n2 4 364\n1 2 529\n6 11 96\n4 9 449\n3 7 831\n6 8 53\n7 10 167\n2 3 855\n2 9 101\n4 5 891\n5 10 599\n4 8 989\n1 6 22\n7 11 142\n10 12 617\n5 12 29\n",
+      "out": "2933\n"
+    },
+    {
+      "in": "12 17\n4 10 54\n2 4 791\n1 2 350\n6 11 88\n4 9 53\n3 7 771\n6 8 935\n7 10 222\n2 3 53\n2 9 821\n4 5 50\n5 10 738\n4 8 443\n1 6 318\n7 11 60\n10 12 456\n5 12 471\n",
+      "out": "2147\n"
+    }
+  ],
+  "reference": {
+    "py": "ref/py/mst_kruskal.py"
+  },
+  "hints": [
+    {
+      "level": 1,
+      "text": "辺を重み昇順に並べ、サイクルを作らないものだけ採用（Kruskal）。"
+    },
+    {
+      "level": 2,
+      "text": "サイクル判定にUnion-Findを使う。採用数が n-1 に達したら終了。"
+    },
+    {
+      "level": 3,
+      "text": "重みが同じでも動くように比較は w のみ。"
+    }
+  ],
+  "distractors": [
+    {
+      "code": "WRONG_SORT_KEY",
+      "desc": "w以外でソート"
+    },
+    {
+      "code": "CYCLE_FILTER_MISS",
+      "desc": "サイクル検出を忘れる"
+    },
+    {
+      "code": "UNION_ORDER_BUG",
+      "desc": "併合の大小関係を誤る"
+    }
+  ],
+  "witness": {
+    "mst_weight_t1": 2933,
+    "chosen_edges_t1": [
+      13,
+      16,
+      6,
+      3,
+      9,
+      14,
+      7,
+      1,
+      2,
+      11,
+      5
+    ],
+    "mst_weight_t2": 2147,
+    "chosen_edges_t2": [
+      10,
+      8,
+      4,
+      0,
+      14,
+      3,
+      7,
+      13,
+      2,
+      12,
+      15
+    ]
+  },
+  "difficulty": {
+    "score": 0.45,
+    "basis": "Kruskal + DSU"
+  },
+  "tags": [
+    "graph",
+    "mst",
+    "dsu",
+    "intermediate"
+  ],
+  "license": "CC BY-SA 4.0 (texts) / MIT (code)"
+}

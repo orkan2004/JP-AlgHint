@@ -1,0 +1,110 @@
+{
+  "id": "MST_20250920_00020",
+  "version": "1.0",
+  "lang": "ja",
+  "task_family": "mst_kruskal",
+  "answer_type": "int",
+  "task": "mst_kruskal",
+  "statement_ja": "重み付き無向グラフの最小全域木の重み合計を求めよ。連結でない場合は -1。",
+  "io_spec": {
+    "input": "n m\\n(u v w)×m（1-indexed）",
+    "output": "MST重み合計または -1"
+  },
+  "instance": {
+    "seed": 20,
+    "template_id": "MST_T1",
+    "params": {
+      "n": 16
+    }
+  },
+  "tests": [
+    {
+      "in": "16 33\n3 4 634\n4 9 779\n12 16 971\n3 10 70\n5 10 978\n2 5 26\n1 3 689\n10 12 967\n2 8 894\n6 11 376\n4 8 351\n3 6 230\n5 9 870\n3 15 921\n5 12 207\n1 2 659\n10 11 583\n1 14 775\n6 13 901\n7 12 968\n7 15 242\n4 7 428\n3 14 716\n4 13 551\n8 10 713\n10 13 403\n8 13 691\n2 9 955\n11 12 53\n1 13 869\n2 6 72\n1 7 971\n7 8 214\n",
+      "out": "5544\n"
+    },
+    {
+      "in": "16 33\n3 4 411\n4 9 817\n12 16 188\n3 10 54\n5 10 59\n2 5 924\n1 3 55\n10 12 51\n2 8 881\n6 11 60\n4 8 979\n3 6 45\n5 9 53\n3 15 553\n5 12 359\n1 2 52\n10 11 218\n1 14 772\n6 13 56\n7 12 585\n7 15 59\n4 7 58\n3 14 587\n4 13 60\n8 10 113\n10 13 900\n8 13 875\n2 9 55\n11 12 657\n1 13 397\n2 6 12\n1 7 295\n7 8 590\n",
+      "out": "1503\n"
+    }
+  ],
+  "reference": {
+    "py": "ref/py/mst_kruskal.py"
+  },
+  "hints": [
+    {
+      "level": 1,
+      "text": "辺を重み昇順に並べ、サイクルを作らないものだけ採用（Kruskal）。"
+    },
+    {
+      "level": 2,
+      "text": "サイクル判定にUnion-Findを使う。採用数が n-1 に達したら終了。"
+    },
+    {
+      "level": 3,
+      "text": "重みが同じでも動くように比較は w のみ。"
+    }
+  ],
+  "distractors": [
+    {
+      "code": "WRONG_SORT_KEY",
+      "desc": "w以外でソート"
+    },
+    {
+      "code": "CYCLE_FILTER_MISS",
+      "desc": "サイクル検出を忘れる"
+    },
+    {
+      "code": "UNION_ORDER_BUG",
+      "desc": "併合の大小関係を誤る"
+    }
+  ],
+  "witness": {
+    "mst_weight_t1": 5544,
+    "chosen_edges_t1": [
+      5,
+      28,
+      3,
+      30,
+      14,
+      32,
+      11,
+      20,
+      10,
+      25,
+      23,
+      15,
+      22,
+      1,
+      2
+    ],
+    "mst_weight_t2": 1503,
+    "chosen_edges_t2": [
+      30,
+      11,
+      7,
+      15,
+      12,
+      3,
+      27,
+      18,
+      21,
+      20,
+      23,
+      9,
+      24,
+      2,
+      22
+    ]
+  },
+  "difficulty": {
+    "score": 0.45,
+    "basis": "Kruskal + DSU"
+  },
+  "tags": [
+    "graph",
+    "mst",
+    "dsu",
+    "intermediate"
+  ],
+  "license": "CC BY-SA 4.0 (texts) / MIT (code)"
+}
