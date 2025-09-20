@@ -1,0 +1,9 @@
+﻿name: Bug report
+description: 不具合の報告
+title: "[bug]: "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what
+    attributes: { label: 何が起きたか, description: 期待と実際、再現手順 }
+    validations: { required: true }
