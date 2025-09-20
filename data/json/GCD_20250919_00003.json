@@ -48,7 +48,12 @@
     }
   ],
   "witness": {
-    "opt_value": 1
+    "opt_value": 1,
+    "counterexample_mod_negative": {
+      "in": "-6 9\n",
+      "expected_out": "3\n",
+      "desc": "負数の剰余/符号処理を誤る実装への反例"
+    }
   },
   "difficulty": {
     "score": 0.2,

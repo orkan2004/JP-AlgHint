@@ -79,7 +79,12 @@
       29,
       4,
       27
-    ]
+    ],
+    "counterexample_end_exclusive": {
+      "in": "2\n0 10\n10 20\n",
+      "expected_out": "2\n",
+      "desc": ">= を > にすると2本選べない半開/閉区間ミス"
+    }
   },
   "difficulty": {
     "score": 0.35,
