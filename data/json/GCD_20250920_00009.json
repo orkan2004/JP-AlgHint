@@ -1,0 +1,63 @@
+{
+  "id": "GCD_20250920_00009",
+  "task": "gcd",
+  "statement_ja": "整数 a, b が与えられる。a と b の最大公約数を求めよ。",
+  "io_spec": {
+    "input": "a b",
+    "output": "gcd(a,b)"
+  },
+  "instance": {
+    "seed": 9,
+    "template_id": "GCD_T1",
+    "params": {
+      "a": 393170,
+      "b": 421366
+    }
+  },
+  "tests": [
+    {
+      "in": "393170 421366\n",
+      "out": "2\n"
+    },
+    {
+      "in": "421366 393170\n",
+      "out": "2\n"
+    }
+  ],
+  "reference": {
+    "py": "ref/py/gcd.py"
+  },
+  "hints": [
+    {
+      "level": 1,
+      "text": "ユークリッドの互除法を思い出そう。"
+    },
+    {
+      "level": 2,
+      "text": "gcd(a,b)=gcd(b, a mod b) をb=0まで繰り返す。"
+    },
+    {
+      "level": 3,
+      "text": "while b: a,b=b,a%b。最後のaが答え。"
+    }
+  ],
+  "distractors": [
+    {
+      "code": "MOD_NEGATIVE",
+      "desc": "負の剰余の扱いを誤る"
+    }
+  ],
+  "witness": {
+    "opt_value": 2
+  },
+  "difficulty": {
+    "score": 0.2,
+    "basis": "ループ回数が小さい"
+  },
+  "tags": [
+    "number",
+    "math",
+    "beginner"
+  ],
+  "license": "CC BY-SA 4.0 (texts) / MIT (code)"
+}
