@@ -1,10 +1,14 @@
-{
+﻿{
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "JP-AlgHint v1 sample",
   "type": "object",
   "required": ["id","task","statement_ja","io_spec","instance","tests","reference","hints","tags","license"],
   "properties": {
     "id": {"type":"string","pattern":"^(GCD|BS|INT|BFS|KNAP|DSIM)_\\d{8}_\\d{5}$"},
+    "version": {"type":"string"},
+    "lang": {"type":"string"},
+    "task_family": {"type":"string"},
+    "answer_type": {"type":"string"},
     "task": {"type":"string"},
     "statement_ja": {"type":"string","minLength":10},
     "io_spec": {"type":"object","required":["input","output"],
