@@ -1,0 +1,112 @@
+{
+  "id": "KNAP_20250920_00012",
+  "version": "1.0",
+  "lang": "ja",
+  "task_family": "knapsack_01",
+  "answer_type": "int",
+  "task": "knapsack_01",
+  "statement_ja": "重さ w_i と価値 v_i の品物から、容量 W を超えないように選んで価値合計を最大化せよ（各品物は高々1個）。",
+  "io_spec": {
+    "input": "n W\\n(w v)×n",
+    "output": "最大価値（整数）"
+  },
+  "instance": {
+    "seed": 12,
+    "template_id": "KNAP_T1",
+    "params": {
+      "n": 23,
+      "W": 259
+    }
+  },
+  "tests": [
+    {
+      "in": "23 259\n16 80\n21 54\n26 9\n19 98\n4 27\n29 50\n10 36\n28 12\n25 1\n17 41\n16 43\n7 34\n16 27\n30 35\n23 19\n26 35\n3 25\n23 36\n28 19\n9 46\n27 30\n20 51\n16 11\n",
+      "out": "702\n"
+    },
+    {
+      "in": "24 259\n16 80\n21 54\n26 9\n19 98\n4 27\n29 50\n10 36\n28 12\n25 1\n17 41\n16 43\n7 34\n16 27\n30 35\n23 19\n26 35\n3 25\n23 36\n28 19\n9 46\n27 30\n20 51\n16 11\n155 165\n",
+      "out": "702\n"
+    }
+  ],
+  "reference": {
+    "py": "ref/py/knap01.py"
+  },
+  "hints": [
+    {
+      "level": 1,
+      "text": "0/1ナップサックは DP（容量方向）で解く。"
+    },
+    {
+      "level": 2,
+      "text": "dp[cap] を容量 cap の最大価値として、各品物を後ろ向きに更新。"
+    },
+    {
+      "level": 3,
+      "text": "復元は dp の差分から選択アイテムを逆順に辿る。"
+    }
+  ],
+  "distractors": [
+    {
+      "code": "TAKE_MAX_VALUE_ONLY",
+      "desc": "価値の大きい順に貪欲に取ってしまう誤り"
+    },
+    {
+      "code": "WRONG_GREEDY_ORDER",
+      "desc": "価値/重さ比のみで貪欲に決める誤り（0/1では最適保証がない）"
+    },
+    {
+      "code": "OVERFLOW_EDGE_IGNORED",
+      "desc": "容量境界での等号扱いを誤る"
+    }
+  ],
+  "witness": {
+    "opt_value_t1": 702,
+    "chosen_items_t1": [
+      0,
+      1,
+      3,
+      4,
+      5,
+      6,
+      9,
+      10,
+      11,
+      12,
+      14,
+      15,
+      16,
+      17,
+      19,
+      21
+    ],
+    "opt_value_t2": 702,
+    "chosen_items_t2": [
+      0,
+      1,
+      3,
+      4,
+      5,
+      6,
+      9,
+      10,
+      11,
+      12,
+      14,
+      15,
+      16,
+      17,
+      19,
+      21
+    ]
+  },
+  "difficulty": {
+    "score": 0.45,
+    "basis": "O(nW) DP with reconstruction"
+  },
+  "tags": [
+    "dp",
+    "simulation",
+    "intermediate"
+  ],
+  "license": "CC BY-SA 4.0 (texts) / MIT (code)"
+}

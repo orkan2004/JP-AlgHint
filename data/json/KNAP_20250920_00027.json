@@ -1,0 +1,100 @@
+{
+  "id": "KNAP_20250920_00027",
+  "version": "1.0",
+  "lang": "ja",
+  "task_family": "knapsack_01",
+  "answer_type": "int",
+  "task": "knapsack_01",
+  "statement_ja": "重さ w_i と価値 v_i の品物から、容量 W を超えないように選んで価値合計を最大化せよ（各品物は高々1個）。",
+  "io_spec": {
+    "input": "n W\\n(w v)×n",
+    "output": "最大価値（整数）"
+  },
+  "instance": {
+    "seed": 27,
+    "template_id": "KNAP_T1",
+    "params": {
+      "n": 14,
+      "W": 121
+    }
+  },
+  "tests": [
+    {
+      "in": "14 121\n9 87\n3 30\n7 55\n24 55\n27 72\n6 55\n12 73\n3 67\n26 6\n16 73\n16 27\n30 94\n5 30\n26 90\n",
+      "out": "654\n"
+    },
+    {
+      "in": "15 121\n9 87\n3 30\n7 55\n24 55\n27 72\n6 55\n12 73\n3 67\n26 6\n16 73\n16 27\n30 94\n5 30\n26 90\n72 199\n",
+      "out": "654\n"
+    }
+  ],
+  "reference": {
+    "py": "ref/py/knap01.py"
+  },
+  "hints": [
+    {
+      "level": 1,
+      "text": "0/1ナップサックは DP（容量方向）で解く。"
+    },
+    {
+      "level": 2,
+      "text": "dp[cap] を容量 cap の最大価値として、各品物を後ろ向きに更新。"
+    },
+    {
+      "level": 3,
+      "text": "復元は dp の差分から選択アイテムを逆順に辿る。"
+    }
+  ],
+  "distractors": [
+    {
+      "code": "TAKE_MAX_VALUE_ONLY",
+      "desc": "価値の大きい順に貪欲に取ってしまう誤り"
+    },
+    {
+      "code": "WRONG_GREEDY_ORDER",
+      "desc": "価値/重さ比のみで貪欲に決める誤り（0/1では最適保証がない）"
+    },
+    {
+      "code": "OVERFLOW_EDGE_IGNORED",
+      "desc": "容量境界での等号扱いを誤る"
+    }
+  ],
+  "witness": {
+    "opt_value_t1": 654,
+    "chosen_items_t1": [
+      0,
+      1,
+      2,
+      5,
+      6,
+      7,
+      9,
+      11,
+      12,
+      13
+    ],
+    "opt_value_t2": 654,
+    "chosen_items_t2": [
+      0,
+      1,
+      2,
+      5,
+      6,
+      7,
+      9,
+      11,
+      12,
+      13
+    ]
+  },
+  "difficulty": {
+    "score": 0.45,
+    "basis": "O(nW) DP with reconstruction"
+  },
+  "tags": [
+    "dp",
+    "simulation",
+    "intermediate"
+  ],
+  "license": "CC BY-SA 4.0 (texts) / MIT (code)"
+}

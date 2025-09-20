@@ -1,0 +1,102 @@
+{
+  "id": "KNAP_20250920_00013",
+  "version": "1.0",
+  "lang": "ja",
+  "task_family": "knapsack_01",
+  "answer_type": "int",
+  "task": "knapsack_01",
+  "statement_ja": "重さ w_i と価値 v_i の品物から、容量 W を超えないように選んで価値合計を最大化せよ（各品物は高々1個）。",
+  "io_spec": {
+    "input": "n W\\n(w v)×n",
+    "output": "最大価値（整数）"
+  },
+  "instance": {
+    "seed": 13,
+    "template_id": "KNAP_T1",
+    "params": {
+      "n": 18,
+      "W": 167
+    }
+  },
+  "tests": [
+    {
+      "in": "18 167\n1 15\n13 67\n16 98\n16 52\n15 3\n25 28\n7 17\n22 85\n28 28\n27 10\n12 58\n22 76\n27 63\n18 42\n1 95\n9 7\n20 40\n16 38\n",
+      "out": "689\n"
+    },
+    {
+      "in": "19 167\n1 15\n13 67\n16 98\n16 52\n15 3\n25 28\n7 17\n22 85\n28 28\n27 10\n12 58\n22 76\n27 63\n18 42\n1 95\n9 7\n20 40\n16 38\n100 180\n",
+      "out": "689\n"
+    }
+  ],
+  "reference": {
+    "py": "ref/py/knap01.py"
+  },
+  "hints": [
+    {
+      "level": 1,
+      "text": "0/1ナップサックは DP（容量方向）で解く。"
+    },
+    {
+      "level": 2,
+      "text": "dp[cap] を容量 cap の最大価値として、各品物を後ろ向きに更新。"
+    },
+    {
+      "level": 3,
+      "text": "復元は dp の差分から選択アイテムを逆順に辿る。"
+    }
+  ],
+  "distractors": [
+    {
+      "code": "TAKE_MAX_VALUE_ONLY",
+      "desc": "価値の大きい順に貪欲に取ってしまう誤り"
+    },
+    {
+      "code": "WRONG_GREEDY_ORDER",
+      "desc": "価値/重さ比のみで貪欲に決める誤り（0/1では最適保証がない）"
+    },
+    {
+      "code": "OVERFLOW_EDGE_IGNORED",
+      "desc": "容量境界での等号扱いを誤る"
+    }
+  ],
+  "witness": {
+    "opt_value_t1": 689,
+    "chosen_items_t1": [
+      0,
+      1,
+      2,
+      3,
+      7,
+      10,
+      11,
+      12,
+      13,
+      14,
+      17
+    ],
+    "opt_value_t2": 689,
+    "chosen_items_t2": [
+      0,
+      1,
+      2,
+      3,
+      7,
+      10,
+      11,
+      12,
+      13,
+      14,
+      17
+    ]
+  },
+  "difficulty": {
+    "score": 0.45,
+    "basis": "O(nW) DP with reconstruction"
+  },
+  "tags": [
+    "dp",
+    "simulation",
+    "intermediate"
+  ],
+  "license": "CC BY-SA 4.0 (texts) / MIT (code)"
+}

@@ -1,0 +1,104 @@
+{
+  "id": "KNAP_20250920_00024",
+  "version": "1.0",
+  "lang": "ja",
+  "task_family": "knapsack_01",
+  "answer_type": "int",
+  "task": "knapsack_01",
+  "statement_ja": "重さ w_i と価値 v_i の品物から、容量 W を超えないように選んで価値合計を最大化せよ（各品物は高々1個）。",
+  "io_spec": {
+    "input": "n W\\n(w v)×n",
+    "output": "最大価値（整数）"
+  },
+  "instance": {
+    "seed": 24,
+    "template_id": "KNAP_T1",
+    "params": {
+      "n": 19,
+      "W": 183
+    }
+  },
+  "tests": [
+    {
+      "in": "19 183\n24 50\n21 87\n5 72\n19 18\n19 91\n30 30\n21 60\n5 81\n22 32\n14 52\n21 14\n26 34\n16 97\n13 81\n17 67\n25 78\n6 56\n7 54\n27 14\n",
+      "out": "876\n"
+    },
+    {
+      "in": "20 183\n24 50\n21 87\n5 72\n19 18\n19 91\n30 30\n21 60\n5 81\n22 32\n14 52\n21 14\n26 34\n16 97\n13 81\n17 67\n25 78\n6 56\n7 54\n27 14\n109 188\n",
+      "out": "876\n"
+    }
+  ],
+  "reference": {
+    "py": "ref/py/knap01.py"
+  },
+  "hints": [
+    {
+      "level": 1,
+      "text": "0/1ナップサックは DP（容量方向）で解く。"
+    },
+    {
+      "level": 2,
+      "text": "dp[cap] を容量 cap の最大価値として、各品物を後ろ向きに更新。"
+    },
+    {
+      "level": 3,
+      "text": "復元は dp の差分から選択アイテムを逆順に辿る。"
+    }
+  ],
+  "distractors": [
+    {
+      "code": "TAKE_MAX_VALUE_ONLY",
+      "desc": "価値の大きい順に貪欲に取ってしまう誤り"
+    },
+    {
+      "code": "WRONG_GREEDY_ORDER",
+      "desc": "価値/重さ比のみで貪欲に決める誤り（0/1では最適保証がない）"
+    },
+    {
+      "code": "OVERFLOW_EDGE_IGNORED",
+      "desc": "容量境界での等号扱いを誤る"
+    }
+  ],
+  "witness": {
+    "opt_value_t1": 876,
+    "chosen_items_t1": [
+      1,
+      2,
+      4,
+      6,
+      7,
+      9,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17
+    ],
+    "opt_value_t2": 876,
+    "chosen_items_t2": [
+      1,
+      2,
+      4,
+      6,
+      7,
+      9,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17
+    ]
+  },
+  "difficulty": {
+    "score": 0.45,
+    "basis": "O(nW) DP with reconstruction"
+  },
+  "tags": [
+    "dp",
+    "simulation",
+    "intermediate"
+  ],
+  "license": "CC BY-SA 4.0 (texts) / MIT (code)"
+}
