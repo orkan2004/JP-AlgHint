@@ -1,22 +1,42 @@
 ﻿import json, random, time
 from pathlib import Path
+
 TODAY=time.strftime("%Y%m%d")
 def new_id(i): return f"INT_{TODAY}_{i:05d}"
-def opt(seg):
-    seg=sorted([(s,t,i) for i,(s,t) in enumerate(seg)], key=lambda x:(x[1],x[0]))
+
+def greedy_choose(seg):
+    # seg: list[(s,t)]
+    # return: (count, chosen_idx0) where idx0 are ORIGINAL 0-based indices
+    with_idx = [(s,t,i) for i,(s,t) in enumerate(seg)]
+    with_idx.sort(key=lambda x:(x[1],x[0]))
     cur=-10**18; chosen=[]
-    for s,t,i in seg:
-        if s>=cur: chosen.append(i); cur=t
-    return len(chosen)
+    for s,t,i in with_idx:
+        if s>=cur:
+            chosen.append(i)
+            cur=t
+    return len(chosen), chosen
+
 def mk_case(seg):
-    s=[f"{len(seg)}"]+[f"{a} {b}" for a,b in seg]; s="\n".join(s)+"\n"
-    return {"in":s, "out":f"{opt(seg)}\n"}
+    # build I/O strings and compute optimal count & chosen indices
+    cnt, chosen = greedy_choose(seg)
+    s = [f"{len(seg)}"] + [f"{a} {b}" for a,b in seg]
+    return {"in":"\n".join(s)+"\n", "out":f"{cnt}\n"}, chosen
+
 def gen_one(r,i):
-    n=r.randint(8,40); seg=[(s:=r.randint(0,900), s+r.randint(1,200)) for _ in range(n)]
-    t1=mk_case(seg)
+    n=r.randint(8,40)
+    seg=[(s:=r.randint(0,900), s+r.randint(1,200)) for _ in range(n)]
+
+    # test1: 通常
+    t1, chosen1 = mk_case(seg)
+
+    # test2: 終了時刻タイのケース（タイブレークの堅牢性チェック）
     seg2=list(seg)
-    if len(seg2)>=2: seg2[-2]=(min(seg2[-2][1]-1, seg2[-2][0]), seg2[-1][1])  # 同終了時刻
-    t2=mk_case(seg2)
+    if len(seg2)>=2:
+        # 末尾2本の終了を揃える（開始は前の終了-1以内に調整）
+        s,t = seg2[-2]
+        seg2[-2]=(min(t-1, s), seg2[-1][1])
+    t2, chosen2 = mk_case(seg2)
+
     return {
       "id": new_id(i), "version":"1.0", "lang":"ja",
       "task_family":"interval_scheduling", "answer_type":"int",
@@ -35,16 +55,24 @@ def gen_one(r,i):
         {"code":"END_EXCLUSIVE_CONFUSION","desc":"重なり判定で >= と > を取り違え"},
         {"code":"LOWER_UPPER_SWAP","desc":"開始・終了の大小を取り違え"}
       ],
-      "witness":{},
+      # ← witness に各テストの選択インデックス（0-based）を保存
+      "witness":{"chosen_indices_t1": chosen1, "chosen_indices_t2": chosen2},
       "difficulty":{"score":0.35,"basis":"greedy with tie-break"},
       "tags":["greedy","simulation","beginner"],
       "license":"CC BY-SA 4.0 (texts) / MIT (code)"
     }
+
 def main(n=30):
-    Path("data/json").mkdir(parents=True, exist_ok=True); r=random.Random(20240920)
+    Path("data/json").mkdir(parents=True, exist_ok=True)
+    r=random.Random(20240920)
     for i in range(1,n+1):
-        item=gen_one(r,i); path=Path("data/json")/f"{item['id']}.json"
-        with open(path,"w",encoding="utf-8") as f: json.dump(item,f,ensure_ascii=False,indent=2)
+        item=gen_one(r,i)
+        path=Path("data/json")/f"{item['id']}.json"
+        with open(path,"w",encoding="utf-8") as f:
+            json.dump(item,f,ensure_ascii=False,indent=2)
     print(f"generated {n} INT items for {TODAY}")
+
 if __name__=="__main__":
-    import sys; n=int(sys.argv[1]) if len(sys.argv)>1 else 30; main(n)
+    import sys
+    n=int(sys.argv[1]) if len(sys.argv)>1 else 30
+    main(n)

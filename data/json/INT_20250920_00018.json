@@ -58,7 +58,27 @@
       "desc": "開始・終了の大小を取り違え"
     }
   ],
-  "witness": {},
+  "witness": {
+    "chosen_indices_t1": [
+      20,
+      0,
+      6,
+      21,
+      17,
+      18,
+      12,
+      3
+    ],
+    "chosen_indices_t2": [
+      10,
+      6,
+      21,
+      17,
+      18,
+      12,
+      3
+    ]
+  },
   "difficulty": {
     "score": 0.35,
     "basis": "greedy with tie-break"
