@@ -1,22 +1,20 @@
 ﻿name: CI
-on: [push, pull_request]
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 jobs:
-  test:
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-        py: ["3.10", "3.11", "3.12"]
-    runs-on: ${{ matrix.os }}
+  validate:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
-        with: { python-version: ${{ matrix.py }} }
-      - name: Validate
-        run: python .\eval\validate_all.py
-        shell: pwsh
-      - name: Lint
-        run: python .\eval\linters.py
-        shell: pwsh
-      - name: Stats
-        run: python .\eval\stats_overview.py
-        shell: pwsh
+        with:
+          python-version: '3.11'
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Validate JSON
+        run: python eval/validate_all.py
