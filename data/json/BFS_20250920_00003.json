@@ -60,12 +60,7 @@
   ],
   "witness": {
     "shortest_len_t1": 1,
-    "shortest_len_t2": -1,
-    "counterexample_index_base_mismatch": {
-      "in": "2 1 1 2\n1 2\n",
-      "expected_out": "1\n",
-      "desc": "1-indexed入力を0-index扱いするミスの最小例"
-    }
+    "shortest_len_t2": -1
   },
   "difficulty": {
     "score": 0.4,
