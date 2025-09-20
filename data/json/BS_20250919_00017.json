@@ -1,4 +1,4 @@
-﻿{
+{
   "id": "BS_20250919_00017",
   "task": "binary_search_exist",
   "statement_ja": "長さ n の昇順配列と値 x が与えられる。x が存在すれば 1、なければ 0 を出力せよ。",
@@ -58,5 +58,9 @@
     "search",
     "beginner"
   ],
-  "license": "CC BY-SA 4.0 (texts) / MIT (code)"
+  "license": "CC BY-SA 4.0 (texts) / MIT (code)",
+  "version": "1.0",
+  "lang": "ja",
+  "task_family": "binary_search",
+  "answer_type": "bool"
 }
