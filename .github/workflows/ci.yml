@@ -16,3 +16,5 @@ jobs:
           pip install -r requirements.txt
       - name: Validate JSON
         run: python eval/validate_all.py
+      - name: Check schema sync
+        run: python eval/check_schema_sync.py
