@@ -38,7 +38,7 @@
     },
     {
       "level": 2,
-      "text": "dp[cap] を容量 cap の最大価値として、各品物を後ろ向きに更新。"
+      "text": "dp[cap] を容量 cap の最大価値として、各品目を後ろ向きに更新。"
     },
     {
       "level": 3,
@@ -48,15 +48,15 @@
   "distractors": [
     {
       "code": "TAKE_MAX_VALUE_ONLY",
-      "desc": "価値の大きい順に貪欲に取ってしまう誤り"
+      "desc": "価値の大きい順に貪欲に取る誤り"
     },
     {
       "code": "WRONG_GREEDY_ORDER",
-      "desc": "価値/重さ比のみで貪欲に決める誤り（0/1では最適保証がない）"
+      "desc": "価値/重さ比のみの貪欲（0/1では最適保証なし）"
     },
     {
       "code": "OVERFLOW_EDGE_IGNORED",
-      "desc": "容量境界での等号扱いを誤る"
+      "desc": "容量境界の等号扱いを誤る"
     }
   ],
   "witness": {
