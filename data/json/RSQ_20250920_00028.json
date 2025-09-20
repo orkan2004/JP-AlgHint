@@ -1,0 +1,88 @@
+{
+  "id": "RSQ_20250920_00028",
+  "version": "1.0",
+  "lang": "ja",
+  "task_family": "range_sum_query",
+  "answer_type": "lines",
+  "task": "rsq_prefix",
+  "statement_ja": "配列 a と Q 個の区間 [l,r] (1-indexed, 閉区間) が与えられる。各区間の和を求めよ。",
+  "io_spec": {
+    "input": "n Q\\na_1 .. a_n\\n(l r)×Q",
+    "output": "各クエリの区間和（改行区切り）"
+  },
+  "instance": {
+    "seed": 28,
+    "template_id": "RSQ_T1",
+    "params": {
+      "n": 18
+    }
+  },
+  "tests": [
+    {
+      "in": "18 21\n99 77 -29 -79 -4 14 13 -44 -7 -69 4 44 -32 96 71 60 -13 -50\n5 6\n13 16\n6 12\n1 13\n6 14\n4 10\n3 5\n11 14\n14 17\n4 11\n1 10\n7 14\n10 14\n8 11\n7 15\n12 14\n8 13\n6 11\n1 11\n11 13\n11 18\n",
+      "out": "10\n195\n-45\n-13\n19\n-176\n-112\n112\n214\n-172\n-29\n5\n43\n-116\n76\n108\n-104\n-89\n-25\n16\n180\n"
+    },
+    {
+      "in": "18 12\n99 77 -29 -79 -4 14 13 -44 -7 -69 4 44 -32 96 71 60 -13 -50\n1 1\n18 18\n1 18\n4 16\n9 16\n7 17\n3 8\n9 12\n11 17\n4 10\n4 11\n1 14\n",
+      "out": "99\n-50\n151\n67\n167\n123\n-129\n-28\n230\n-176\n-172\n83\n"
+    }
+  ],
+  "reference": {
+    "py": "ref/py/rsq_prefix.py"
+  },
+  "hints": [
+    {
+      "level": 1,
+      "text": "累積和を作ると O(1) で区間和が出せる。"
+    },
+    {
+      "level": 2,
+      "text": "pref[i] = a_1+…+a_i、答えは pref[r]-pref[l-1]。"
+    },
+    {
+      "level": 3,
+      "text": "1-indexed の境界 (l-1) を忘れないこと。"
+    }
+  ],
+  "distractors": [
+    {
+      "code": "OFF_BY_ONE_L",
+      "desc": "pref[r]-pref[l] としてしまう"
+    },
+    {
+      "code": "ZERO_INDEX_INPUT",
+      "desc": "入力1-indexedを0-index前提で処理"
+    },
+    {
+      "code": "REBUILD_EACH_QUERY",
+      "desc": "毎回部分和をループで足す O(nQ)"
+    }
+  ],
+  "witness": {
+    "array_len": 18,
+    "sample_queries": [
+      [
+        1,
+        1
+      ],
+      [
+        18,
+        18
+      ],
+      [
+        1,
+        18
+      ]
+    ]
+  },
+  "difficulty": {
+    "score": 0.25,
+    "basis": "prefix sum basics"
+  },
+  "tags": [
+    "array",
+    "prefix_sum",
+    "beginner"
+  ],
+  "license": "CC BY-SA 4.0 (texts) / MIT (code)"
+}

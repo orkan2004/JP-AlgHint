@@ -1,0 +1,88 @@
+{
+  "id": "RSQ_20250920_00018",
+  "version": "1.0",
+  "lang": "ja",
+  "task_family": "range_sum_query",
+  "answer_type": "lines",
+  "task": "rsq_prefix",
+  "statement_ja": "配列 a と Q 個の区間 [l,r] (1-indexed, 閉区間) が与えられる。各区間の和を求めよ。",
+  "io_spec": {
+    "input": "n Q\\na_1 .. a_n\\n(l r)×Q",
+    "output": "各クエリの区間和（改行区切り）"
+  },
+  "instance": {
+    "seed": 18,
+    "template_id": "RSQ_T1",
+    "params": {
+      "n": 43
+    }
+  },
+  "tests": [
+    {
+      "in": "43 45\n51 -97 96 -27 -20 -20 -48 -30 -8 -91 -70 16 -31 -49 30 -54 82 39 -32 58 -91 36 77 -49 -24 97 -85 -19 -91 71 72 -35 -48 -58 64 -79 -99 -32 -50 27 84 74 67\n18 42\n16 41\n22 40\n8 42\n25 34\n25 28\n7 18\n23 28\n38 40\n14 24\n24 33\n2 17\n36 40\n20 24\n27 38\n30 42\n13 18\n9 15\n10 26\n16 17\n9 22\n12 30\n19 37\n5 42\n19 32\n1 28\n19 26\n5 31\n6 21\n35 40\n2 16\n10 18\n35 36\n12 19\n3 41\n4 7\n1 24\n22 32\n9 35\n12 19\n18 34\n5 42\n10 40\n13 20\n18 40\n",
+      "out": "-93\n-139\n-225\n-298\n-120\n-31\n-214\n-3\n-55\n47\n-111\n-321\n-233\n31\n-339\n-9\n17\n-203\n-56\n28\n-165\n-19\n-235\n-386\n-15\n-263\n72\n-234\n-299\n-169\n-403\n-128\n-15\n1\n-391\n-115\n-232\n50\n-193\n1\n-82\n-386\n-418\n43\n-251\n"
+    },
+    {
+      "in": "43 13\n51 -97 96 -27 -20 -20 -48 -30 -8 -91 -70 16 -31 -49 30 -54 82 39 -32 58 -91 36 77 -49 -24 97 -85 -19 -91 71 72 -35 -48 -58 64 -79 -99 -32 -50 27 84 74 67\n1 1\n43 43\n1 43\n10 24\n16 28\n2 9\n5 17\n6 22\n8 42\n13 34\n21 38\n11 16\n8 31\n",
+      "out": "51\n67\n-296\n-129\n35\n-154\n-293\n-263\n-298\n-104\n-293\n-158\n-146\n"
+    }
+  ],
+  "reference": {
+    "py": "ref/py/rsq_prefix.py"
+  },
+  "hints": [
+    {
+      "level": 1,
+      "text": "累積和を作ると O(1) で区間和が出せる。"
+    },
+    {
+      "level": 2,
+      "text": "pref[i] = a_1+…+a_i、答えは pref[r]-pref[l-1]。"
+    },
+    {
+      "level": 3,
+      "text": "1-indexed の境界 (l-1) を忘れないこと。"
+    }
+  ],
+  "distractors": [
+    {
+      "code": "OFF_BY_ONE_L",
+      "desc": "pref[r]-pref[l] としてしまう"
+    },
+    {
+      "code": "ZERO_INDEX_INPUT",
+      "desc": "入力1-indexedを0-index前提で処理"
+    },
+    {
+      "code": "REBUILD_EACH_QUERY",
+      "desc": "毎回部分和をループで足す O(nQ)"
+    }
+  ],
+  "witness": {
+    "array_len": 43,
+    "sample_queries": [
+      [
+        1,
+        1
+      ],
+      [
+        43,
+        43
+      ],
+      [
+        1,
+        43
+      ]
+    ]
+  },
+  "difficulty": {
+    "score": 0.25,
+    "basis": "prefix sum basics"
+  },
+  "tags": [
+    "array",
+    "prefix_sum",
+    "beginner"
+  ],
+  "license": "CC BY-SA 4.0 (texts) / MIT (code)"
+}

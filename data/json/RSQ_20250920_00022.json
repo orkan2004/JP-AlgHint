@@ -1,0 +1,88 @@
+{
+  "id": "RSQ_20250920_00022",
+  "version": "1.0",
+  "lang": "ja",
+  "task_family": "range_sum_query",
+  "answer_type": "lines",
+  "task": "rsq_prefix",
+  "statement_ja": "配列 a と Q 個の区間 [l,r] (1-indexed, 閉区間) が与えられる。各区間の和を求めよ。",
+  "io_spec": {
+    "input": "n Q\\na_1 .. a_n\\n(l r)×Q",
+    "output": "各クエリの区間和（改行区切り）"
+  },
+  "instance": {
+    "seed": 22,
+    "template_id": "RSQ_T1",
+    "params": {
+      "n": 54
+    }
+  },
+  "tests": [
+    {
+      "in": "54 13\n34 30 78 4 94 -97 -28 -68 -89 -34 67 -34 -63 30 80 -39 4 47 -65 -27 93 -33 19 -85 -13 -91 70 32 -12 -87 57 42 20 92 41 -66 -27 43 -50 -3 72 29 6 5 -49 -24 77 6 -79 83 8 -97 49 14\n12 22\n11 53\n30 48\n42 46\n3 51\n1 43\n1 9\n7 20\n15 36\n19 21\n25 45\n36 51\n34 51\n",
+      "out": "-7\n128\n184\n-33\n36\n73\n-42\n-219\n79\n1\n111\n31\n164\n"
+    },
+    {
+      "in": "54 16\n34 30 78 4 94 -97 -28 -68 -89 -34 67 -34 -63 30 80 -39 4 47 -65 -27 93 -33 19 -85 -13 -91 70 32 -12 -87 57 42 20 92 41 -66 -27 43 -50 -3 72 29 6 5 -49 -24 77 6 -79 83 8 -97 49 14\n1 1\n54 54\n1 54\n23 44\n12 15\n1 31\n27 42\n48 54\n18 53\n4 8\n37 38\n19 25\n40 54\n21 48\n26 29\n8 46\n",
+      "out": "34\n14\n66\n94\n13\n-126\n253\n-16\n83\n-95\n16\n-111\n97\n164\n-1\n-110\n"
+    }
+  ],
+  "reference": {
+    "py": "ref/py/rsq_prefix.py"
+  },
+  "hints": [
+    {
+      "level": 1,
+      "text": "累積和を作ると O(1) で区間和が出せる。"
+    },
+    {
+      "level": 2,
+      "text": "pref[i] = a_1+…+a_i、答えは pref[r]-pref[l-1]。"
+    },
+    {
+      "level": 3,
+      "text": "1-indexed の境界 (l-1) を忘れないこと。"
+    }
+  ],
+  "distractors": [
+    {
+      "code": "OFF_BY_ONE_L",
+      "desc": "pref[r]-pref[l] としてしまう"
+    },
+    {
+      "code": "ZERO_INDEX_INPUT",
+      "desc": "入力1-indexedを0-index前提で処理"
+    },
+    {
+      "code": "REBUILD_EACH_QUERY",
+      "desc": "毎回部分和をループで足す O(nQ)"
+    }
+  ],
+  "witness": {
+    "array_len": 54,
+    "sample_queries": [
+      [
+        1,
+        1
+      ],
+      [
+        54,
+        54
+      ],
+      [
+        1,
+        54
+      ]
+    ]
+  },
+  "difficulty": {
+    "score": 0.25,
+    "basis": "prefix sum basics"
+  },
+  "tags": [
+    "array",
+    "prefix_sum",
+    "beginner"
+  ],
+  "license": "CC BY-SA 4.0 (texts) / MIT (code)"
+}

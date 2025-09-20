@@ -1,0 +1,88 @@
+{
+  "id": "RSQ_20250920_00011",
+  "version": "1.0",
+  "lang": "ja",
+  "task_family": "range_sum_query",
+  "answer_type": "lines",
+  "task": "rsq_prefix",
+  "statement_ja": "配列 a と Q 個の区間 [l,r] (1-indexed, 閉区間) が与えられる。各区間の和を求めよ。",
+  "io_spec": {
+    "input": "n Q\\na_1 .. a_n\\n(l r)×Q",
+    "output": "各クエリの区間和（改行区切り）"
+  },
+  "instance": {
+    "seed": 11,
+    "template_id": "RSQ_T1",
+    "params": {
+      "n": 24
+    }
+  },
+  "tests": [
+    {
+      "in": "24 26\n34 1 66 57 14 -21 43 34 -26 79 27 19 -57 -89 11 78 -43 100 -15 79 -79 -76 50 -36\n1 20\n8 24\n3 9\n4 22\n15 18\n21 23\n1 4\n1 14\n6 16\n1 22\n20 24\n1 11\n1 18\n8 14\n15 17\n5 21\n13 24\n19 23\n5 11\n19 24\n2 19\n4 21\n15 17\n3 23\n20 22\n6 20\n",
+      "out": "391\n56\n167\n135\n146\n-105\n158\n181\n98\n236\n-62\n308\n327\n-13\n46\n154\n-77\n-41\n150\n-77\n278\n211\n46\n251\n-76\n219\n"
+    },
+    {
+      "in": "24 12\n34 1 66 57 14 -21 43 34 -26 79 27 19 -57 -89 11 78 -43 100 -15 79 -79 -76 50 -36\n1 1\n24 24\n1 24\n21 22\n15 21\n9 17\n8 15\n13 24\n11 17\n7 13\n1 8\n11 20\n",
+      "out": "34\n-36\n250\n-155\n131\n-1\n-2\n-77\n-54\n119\n228\n110\n"
+    }
+  ],
+  "reference": {
+    "py": "ref/py/rsq_prefix.py"
+  },
+  "hints": [
+    {
+      "level": 1,
+      "text": "累積和を作ると O(1) で区間和が出せる。"
+    },
+    {
+      "level": 2,
+      "text": "pref[i] = a_1+…+a_i、答えは pref[r]-pref[l-1]。"
+    },
+    {
+      "level": 3,
+      "text": "1-indexed の境界 (l-1) を忘れないこと。"
+    }
+  ],
+  "distractors": [
+    {
+      "code": "OFF_BY_ONE_L",
+      "desc": "pref[r]-pref[l] としてしまう"
+    },
+    {
+      "code": "ZERO_INDEX_INPUT",
+      "desc": "入力1-indexedを0-index前提で処理"
+    },
+    {
+      "code": "REBUILD_EACH_QUERY",
+      "desc": "毎回部分和をループで足す O(nQ)"
+    }
+  ],
+  "witness": {
+    "array_len": 24,
+    "sample_queries": [
+      [
+        1,
+        1
+      ],
+      [
+        24,
+        24
+      ],
+      [
+        1,
+        24
+      ]
+    ]
+  },
+  "difficulty": {
+    "score": 0.25,
+    "basis": "prefix sum basics"
+  },
+  "tags": [
+    "array",
+    "prefix_sum",
+    "beginner"
+  ],
+  "license": "CC BY-SA 4.0 (texts) / MIT (code)"
+}

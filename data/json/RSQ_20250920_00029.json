@@ -1,0 +1,88 @@
+{
+  "id": "RSQ_20250920_00029",
+  "version": "1.0",
+  "lang": "ja",
+  "task_family": "range_sum_query",
+  "answer_type": "lines",
+  "task": "rsq_prefix",
+  "statement_ja": "配列 a と Q 個の区間 [l,r] (1-indexed, 閉区間) が与えられる。各区間の和を求めよ。",
+  "io_spec": {
+    "input": "n Q\\na_1 .. a_n\\n(l r)×Q",
+    "output": "各クエリの区間和（改行区切り）"
+  },
+  "instance": {
+    "seed": 29,
+    "template_id": "RSQ_T1",
+    "params": {
+      "n": 32
+    }
+  },
+  "tests": [
+    {
+      "in": "32 18\n-92 -23 8 -98 -33 44 62 -69 34 13 50 35 35 -8 32 33 91 7 25 -91 -55 -50 78 -6 88 23 89 24 -70 93 -47 11\n2 4\n25 28\n26 29\n3 28\n10 26\n7 12\n14 15\n1 11\n4 14\n1 19\n11 15\n25 31\n14 19\n16 27\n3 26\n5 12\n25 27\n13 25\n",
+      "out": "-113\n224\n66\n361\n300\n125\n24\n-104\n65\n146\n144\n200\n180\n232\n248\n136\n200\n179\n"
+    },
+    {
+      "in": "32 12\n-92 -23 8 -98 -33 44 62 -69 34 13 50 35 35 -8 32 33 91 7 25 -91 -55 -50 78 -6 88 23 89 24 -70 93 -47 11\n1 1\n32 32\n1 32\n3 17\n12 31\n16 26\n4 31\n17 19\n6 17\n10 23\n20 31\n17 32\n",
+      "out": "-92\n11\n233\n229\n326\n143\n329\n123\n352\n195\n76\n210\n"
+    }
+  ],
+  "reference": {
+    "py": "ref/py/rsq_prefix.py"
+  },
+  "hints": [
+    {
+      "level": 1,
+      "text": "累積和を作ると O(1) で区間和が出せる。"
+    },
+    {
+      "level": 2,
+      "text": "pref[i] = a_1+…+a_i、答えは pref[r]-pref[l-1]。"
+    },
+    {
+      "level": 3,
+      "text": "1-indexed の境界 (l-1) を忘れないこと。"
+    }
+  ],
+  "distractors": [
+    {
+      "code": "OFF_BY_ONE_L",
+      "desc": "pref[r]-pref[l] としてしまう"
+    },
+    {
+      "code": "ZERO_INDEX_INPUT",
+      "desc": "入力1-indexedを0-index前提で処理"
+    },
+    {
+      "code": "REBUILD_EACH_QUERY",
+      "desc": "毎回部分和をループで足す O(nQ)"
+    }
+  ],
+  "witness": {
+    "array_len": 32,
+    "sample_queries": [
+      [
+        1,
+        1
+      ],
+      [
+        32,
+        32
+      ],
+      [
+        1,
+        32
+      ]
+    ]
+  },
+  "difficulty": {
+    "score": 0.25,
+    "basis": "prefix sum basics"
+  },
+  "tags": [
+    "array",
+    "prefix_sum",
+    "beginner"
+  ],
+  "license": "CC BY-SA 4.0 (texts) / MIT (code)"
+}
