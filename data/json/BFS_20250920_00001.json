@@ -60,7 +60,12 @@
   ],
   "witness": {
     "shortest_len_t1": 1,
-    "shortest_len_t2": -1
+    "shortest_len_t2": -1,
+    "counterexample_index_base_mismatch": {
+      "in": "2 1 1 2\n1 2\n",
+      "expected_out": "1\n",
+      "desc": "1-indexed を 0-indexed と誤解すると到達不能扱いになりやすい最小例。"
+    }
   },
   "difficulty": {
     "score": 0.4,
