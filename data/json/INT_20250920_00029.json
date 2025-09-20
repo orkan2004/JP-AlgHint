@@ -1,0 +1,72 @@
+{
+  "id": "INT_20250920_00029",
+  "version": "1.0",
+  "lang": "ja",
+  "task_family": "interval_scheduling",
+  "answer_type": "int",
+  "task": "interval_scheduling",
+  "statement_ja": "開始時刻 s_i, 終了時刻 t_i の n 個の仕事から、互いに重ならない最大数を選べ。",
+  "io_spec": {
+    "input": "n\\n(s t)×n",
+    "output": "選べる最大個数"
+  },
+  "instance": {
+    "seed": 29,
+    "template_id": "INT_T1",
+    "params": {
+      "n": 29
+    }
+  },
+  "tests": [
+    {
+      "in": "29\n151 303\n764 912\n33 200\n106 226\n527 706\n66 235\n692 850\n171 326\n688 856\n647 764\n274 404\n474 537\n767 865\n534 615\n798 895\n216 278\n15 168\n799 882\n348 532\n39 167\n264 401\n406 537\n551 672\n561 647\n348 353\n480 493\n21 179\n178 242\n669 804\n",
+      "out": "7\n"
+    },
+    {
+      "in": "29\n151 303\n764 912\n33 200\n106 226\n527 706\n66 235\n692 850\n171 326\n688 856\n647 764\n274 404\n474 537\n767 865\n534 615\n798 895\n216 278\n15 168\n799 882\n348 532\n39 167\n264 401\n406 537\n551 672\n561 647\n348 353\n480 493\n21 179\n178 804\n669 804\n",
+      "out": "7\n"
+    }
+  ],
+  "reference": {
+    "py": "ref/py/int_sched.py"
+  },
+  "hints": [
+    {
+      "level": 1,
+      "text": "終了時刻が早い仕事から選ぶ貪欲法。"
+    },
+    {
+      "level": 2,
+      "text": "終了時刻で昇順ソートし、可能なら採用して終了時刻を更新。"
+    },
+    {
+      "level": 3,
+      "text": "同タイのとき開始が早い順でも最適性は保たれる。"
+    }
+  ],
+  "distractors": [
+    {
+      "code": "TIE_BREAK_WRONG",
+      "desc": "終了時刻同点の処理を誤る"
+    },
+    {
+      "code": "END_EXCLUSIVE_CONFUSION",
+      "desc": "重なり判定で >= と > を取り違え"
+    },
+    {
+      "code": "LOWER_UPPER_SWAP",
+      "desc": "開始・終了の大小を取り違え"
+    }
+  ],
+  "witness": {},
+  "difficulty": {
+    "score": 0.35,
+    "basis": "greedy with tie-break"
+  },
+  "tags": [
+    "greedy",
+    "simulation",
+    "beginner"
+  ],
+  "license": "CC BY-SA 4.0 (texts) / MIT (code)"
+}

@@ -1,0 +1,72 @@
+{
+  "id": "INT_20250920_00020",
+  "version": "1.0",
+  "lang": "ja",
+  "task_family": "interval_scheduling",
+  "answer_type": "int",
+  "task": "interval_scheduling",
+  "statement_ja": "開始時刻 s_i, 終了時刻 t_i の n 個の仕事から、互いに重ならない最大数を選べ。",
+  "io_spec": {
+    "input": "n\\n(s t)×n",
+    "output": "選べる最大個数"
+  },
+  "instance": {
+    "seed": 20,
+    "template_id": "INT_T1",
+    "params": {
+      "n": 38
+    }
+  },
+  "tests": [
+    {
+      "in": "38\n130 304\n233 342\n439 582\n439 584\n531 543\n581 634\n895 1083\n236 416\n247 409\n353 484\n703 809\n110 307\n589 697\n761 924\n853 954\n692 770\n583 748\n309 430\n554 622\n447 494\n873 931\n506 579\n7 25\n400 443\n295 310\n589 617\n791 827\n763 808\n161 282\n556 664\n410 504\n142 306\n753 930\n704 726\n646 842\n764 782\n731 740\n7 163\n",
+      "out": "12\n"
+    },
+    {
+      "in": "38\n130 304\n233 342\n439 582\n439 584\n531 543\n581 634\n895 1083\n236 416\n247 409\n353 484\n703 809\n110 307\n589 697\n761 924\n853 954\n692 770\n583 748\n309 430\n554 622\n447 494\n873 931\n506 579\n7 25\n400 443\n295 310\n589 617\n791 827\n763 808\n161 282\n556 664\n410 504\n142 306\n753 930\n704 726\n646 842\n764 782\n731 163\n7 163\n",
+      "out": "11\n"
+    }
+  ],
+  "reference": {
+    "py": "ref/py/int_sched.py"
+  },
+  "hints": [
+    {
+      "level": 1,
+      "text": "終了時刻が早い仕事から選ぶ貪欲法。"
+    },
+    {
+      "level": 2,
+      "text": "終了時刻で昇順ソートし、可能なら採用して終了時刻を更新。"
+    },
+    {
+      "level": 3,
+      "text": "同タイのとき開始が早い順でも最適性は保たれる。"
+    }
+  ],
+  "distractors": [
+    {
+      "code": "TIE_BREAK_WRONG",
+      "desc": "終了時刻同点の処理を誤る"
+    },
+    {
+      "code": "END_EXCLUSIVE_CONFUSION",
+      "desc": "重なり判定で >= と > を取り違え"
+    },
+    {
+      "code": "LOWER_UPPER_SWAP",
+      "desc": "開始・終了の大小を取り違え"
+    }
+  ],
+  "witness": {},
+  "difficulty": {
+    "score": 0.35,
+    "basis": "greedy with tie-break"
+  },
+  "tags": [
+    "greedy",
+    "simulation",
+    "beginner"
+  ],
+  "license": "CC BY-SA 4.0 (texts) / MIT (code)"
+}
