@@ -1,0 +1,81 @@
+{
+  "id": "UF_20250920_00029",
+  "version": "1.0",
+  "lang": "ja",
+  "task_family": "union_find_connectivity",
+  "answer_type": "lines",
+  "task": "uf_connect",
+  "statement_ja": "無向グラフ G(V,E) と Q 個の質問 (a,b) が与えられる。Union-Find を用いて、a と b が同じ連結成分かを判定せよ（同じなら 1、異なるなら 0）。",
+  "io_spec": {
+    "input": "n m Q\\n(u v)×m\\n(a b)×Q（すべて 1-indexed）",
+    "output": "各クエリに対する 1/0（改行区切り）"
+  },
+  "instance": {
+    "seed": 29,
+    "template_id": "UF_T1",
+    "params": {
+      "n": 32
+    }
+  },
+  "tests": [
+    {
+      "in": "32 48 76\n1 7\n1 12\n1 13\n1 30\n2 4\n2 18\n2 26\n3 27\n4 15\n4 17\n4 23\n4 27\n5 10\n5 13\n5 29\n6 12\n6 29\n7 16\n7 25\n8 14\n9 14\n9 22\n10 12\n10 31\n11 13\n11 19\n12 13\n12 30\n12 32\n13 24\n14 21\n14 27\n15 23\n15 26\n16 25\n16 30\n17 21\n17 27\n18 20\n18 21\n18 22\n18 28\n19 30\n20 23\n21 23\n23 26\n24 25\n25 30\n32 30\n7 31\n11 7\n6 1\n2 4\n18 22\n8 20\n14 9\n1 7\n5 13\n5 11\n15 9\n6 24\n31 16\n27 4\n25 11\n18 9\n13 6\n30 7\n18 3\n2 15\n29 24\n10 32\n15 22\n19 11\n23 3\n26 20\n29 7\n28 2\n5 25\n6 19\n13 16\n9 20\n26 14\n31 24\n11 10\n19 11\n7 11\n28 12\n19 26\n25 26\n4 13\n27 1\n13 4\n4 6\n25 4\n9 31\n23 32\n15 19\n11 14\n16 9\n25 23\n30 9\n7 28\n16 9\n25 18\n4 6\n26 13\n18 25\n7 22\n10 2\n4 12\n19 28\n29 9\n4 16\n2 30\n24 20\n2 25\n29 22\n29 27\n7 27\n1 3\n25 14\n17 6\n1 23\n8 5\n",
+      "out": "1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n"
+    },
+    {
+      "in": "32 60 34\n1 5\n1 6\n1 7\n1 16\n1 29\n1 30\n2 8\n3 14\n3 21\n4 8\n4 9\n4 20\n4 26\n5 11\n5 13\n5 16\n5 25\n6 10\n6 13\n7 10\n8 18\n8 20\n9 14\n9 22\n10 12\n10 24\n11 19\n11 25\n12 31\n13 16\n13 19\n13 29\n14 22\n14 23\n14 27\n15 17\n15 23\n15 26\n16 19\n16 24\n16 25\n16 29\n17 22\n17 26\n17 27\n17 28\n18 20\n18 23\n19 24\n20 21\n20 22\n21 23\n22 27\n23 28\n24 31\n26 27\n26 28\n29 30\n29 32\n30 31\n5 32\n1 25\n20 23\n29 10\n30 19\n23 17\n13 31\n7 1\n30 7\n18 20\n31 13\n29 24\n24 19\n9 4\n6 13\n20 27\n27 17\n28 9\n27 15\n12 16\n30 6\n5 16\n31 10\n20 27\n22 21\n14 27\n24 32\n13 15\n30 22\n31 4\n19 23\n16 27\n14 1\n3 31\n",
+      "out": "1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n0\n0\n0\n0\n0\n0\n0\n"
+    }
+  ],
+  "reference": {
+    "py": "ref/py/uf_connect.py"
+  },
+  "hints": [
+    {
+      "level": 1,
+      "text": "辺をすべて unite してから same(a,b) を判定する。"
+    },
+    {
+      "level": 2,
+      "text": "経路圧縮 + サイズ（またはランク）併合で高速化。"
+    },
+    {
+      "level": 3,
+      "text": "入力は 1-indexed。0-index と取り違えないこと。"
+    }
+  ],
+  "distractors": [
+    {
+      "code": "NO_PATH_COMPRESSION",
+      "desc": "経路圧縮なしで find が遅い"
+    },
+    {
+      "code": "UNION_BY_RANK_BUG",
+      "desc": "小を大にぶら下げる条件を逆にしてしまう"
+    },
+    {
+      "code": "INDEX_BASE_MISMATCH",
+      "desc": "1-indexed/0-indexed の取り違え"
+    },
+    {
+      "code": "DELAY_UNION",
+      "desc": "クエリ処理後に union してしまう順序ミス"
+    }
+  ],
+  "witness": {
+    "yes_count_t1": 38,
+    "no_count_t1": 38,
+    "yes_count_t2": 27,
+    "no_count_t2": 7
+  },
+  "difficulty": {
+    "score": 0.35,
+    "basis": "DSU basics with path compression"
+  },
+  "tags": [
+    "dsu",
+    "graph",
+    "beginner"
+  ],
+  "license": "CC BY-SA 4.0 (texts) / MIT (code)"
+}

@@ -1,0 +1,81 @@
+{
+  "id": "UF_20250920_00024",
+  "version": "1.0",
+  "lang": "ja",
+  "task_family": "union_find_connectivity",
+  "answer_type": "lines",
+  "task": "uf_connect",
+  "statement_ja": "無向グラフ G(V,E) と Q 個の質問 (a,b) が与えられる。Union-Find を用いて、a と b が同じ連結成分かを判定せよ（同じなら 1、異なるなら 0）。",
+  "io_spec": {
+    "input": "n m Q\\n(u v)×m\\n(a b)×Q（すべて 1-indexed）",
+    "output": "各クエリに対する 1/0（改行区切り）"
+  },
+  "instance": {
+    "seed": 24,
+    "template_id": "UF_T1",
+    "params": {
+      "n": 14
+    }
+  },
+  "tests": [
+    {
+      "in": "14 12 47\n1 14\n2 9\n2 12\n3 5\n3 7\n4 6\n4 11\n5 7\n6 11\n8 13\n9 12\n10 13\n6 4\n14 1\n5 3\n6 4\n13 10\n12 9\n5 7\n8 10\n2 12\n2 9\n7 3\n14 1\n13 10\n5 3\n13 10\n5 3\n12 9\n1 14\n1 14\n5 3\n3 7\n3 5\n11 4\n6 2\n7 1\n1 8\n13 7\n11 8\n3 10\n4 7\n10 7\n1 6\n13 5\n14 2\n2 14\n1 2\n3 1\n12 3\n12 1\n6 7\n6 9\n9 6\n14 12\n14 7\n12 3\n14 2\n6 10\n",
+      "out": "1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n"
+    },
+    {
+      "in": "14 12 34\n1 14\n2 9\n2 12\n3 5\n3 7\n4 11\n5 7\n6 11\n8 10\n8 13\n9 12\n10 13\n13 8\n14 1\n5 3\n10 13\n8 13\n1 14\n7 3\n11 6\n3 7\n14 1\n3 5\n1 14\n3 7\n11 6\n7 5\n6 11\n12 9\n10 8\n4 6\n4 11\n10 13\n5 7\n14 1\n11 6\n1 14\n13 8\n2 9\n8 3\n13 11\n8 6\n12 14\n13 6\n13 9\n13 14\n",
+      "out": "1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n0\n0\n0\n0\n0\n0\n0\n"
+    }
+  ],
+  "reference": {
+    "py": "ref/py/uf_connect.py"
+  },
+  "hints": [
+    {
+      "level": 1,
+      "text": "辺をすべて unite してから same(a,b) を判定する。"
+    },
+    {
+      "level": 2,
+      "text": "経路圧縮 + サイズ（またはランク）併合で高速化。"
+    },
+    {
+      "level": 3,
+      "text": "入力は 1-indexed。0-index と取り違えないこと。"
+    }
+  ],
+  "distractors": [
+    {
+      "code": "NO_PATH_COMPRESSION",
+      "desc": "経路圧縮なしで find が遅い"
+    },
+    {
+      "code": "UNION_BY_RANK_BUG",
+      "desc": "小を大にぶら下げる条件を逆にしてしまう"
+    },
+    {
+      "code": "INDEX_BASE_MISMATCH",
+      "desc": "1-indexed/0-indexed の取り違え"
+    },
+    {
+      "code": "DELAY_UNION",
+      "desc": "クエリ処理後に union してしまう順序ミス"
+    }
+  ],
+  "witness": {
+    "yes_count_t1": 23,
+    "no_count_t1": 24,
+    "yes_count_t2": 27,
+    "no_count_t2": 7
+  },
+  "difficulty": {
+    "score": 0.35,
+    "basis": "DSU basics with path compression"
+  },
+  "tags": [
+    "dsu",
+    "graph",
+    "beginner"
+  ],
+  "license": "CC BY-SA 4.0 (texts) / MIT (code)"
+}
