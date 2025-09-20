@@ -1,9 +1,5 @@
 ﻿name: CI
-
-on:
-  push:
-  pull_request:
-
+on: [push, pull_request]
 jobs:
   test:
     strategy:
@@ -14,14 +10,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.py }}
-      - name: Install deps (none for now)
-        run: python -m pip install --upgrade pip
-      - name: Validate dataset
+        with: { python-version: ${{ matrix.py }} }
+      - name: Validate
         run: python .\eval\validate_all.py
         shell: pwsh
-      - name: Lint dataset
+      - name: Lint
         run: python .\eval\linters.py
         shell: pwsh
       - name: Stats
