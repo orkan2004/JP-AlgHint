@@ -1,13 +1,10 @@
-﻿# JP-AlgHint v1 (WIP)
-日本語アルゴリズム学習用の合成データセット。
-各サンプルは 問題文 / IO仕様 / 自動採点テスト / 参照解 / 段階ヒント(Lv1-3) /
-誤答例(distractors) / 機械可検証の証拠(witness) を含む。
+﻿# JP-AlgHint
 
-## Quickstart
+- JSON スキーマ: docs/schema.json, eval/schema.json
+- バリデーション: python eval/validate_all.py
+- ID パターン: ^(GCD|BS|INT|BFS|KNAP|DSIM|MST|RSQ|UF)_\d{8}_\d{5}$
 
-python .\gen\gcd_gen.py 30
-python .\gen\bs_gen.py 30
-python .\gen\int_gen.py 30
-python .\eval\validate_all.py
-python .\eval\linters.py
-python .\eval\stats_overview.py
+## 開発フロー
+1. ブランチ作成: git switch -c feature/<topic>
+2. 変更 → コミット → git push -u origin feature/<topic>
+3. GitHub で PR を作成（CI が通ったらレビュー＆マージ）
