@@ -1,0 +1,75 @@
+{
+  "id": "BFS_20250920_00025",
+  "version": "1.0",
+  "lang": "ja",
+  "task_family": "bfs_shortest",
+  "answer_type": "int",
+  "task": "bfs_shortest",
+  "statement_ja": "無向グラフが与えられる。s から t への最短距離（辺数）を出力せよ。到達不能なら -1。",
+  "io_spec": {
+    "input": "n m s t\\n(u v)×m（1-indexed, 無向）",
+    "output": "最短距離または -1"
+  },
+  "instance": {
+    "seed": 25,
+    "template_id": "BFS_T1",
+    "params": {
+      "n": 43
+    }
+  },
+  "tests": [
+    {
+      "in": "43 96 8 17\n13 33\n4 9\n35 42\n8 9\n8 18\n22 35\n7 10\n13 26\n1 24\n16 31\n14 15\n2 4\n4 23\n11 16\n24 37\n31 33\n9 12\n4 43\n19 43\n5 16\n21 43\n1 3\n36 43\n7 16\n16 28\n10 42\n1 39\n11 41\n12 15\n5 9\n21 27\n15 41\n3 21\n31 37\n14 21\n21 36\n3 30\n12 42\n17 32\n1 23\n10 35\n25 42\n3 5\n4 13\n8 31\n17 43\n19 40\n8 40\n3 7\n6 24\n4 6\n13 39\n3 16\n14 16\n29 35\n3 25\n8 15\n27 28\n8 24\n8 33\n3 9\n16 37\n18 34\n1 2\n8 17\n10 14\n1 11\n5 27\n1 20\n4 10\n1 41\n1 4\n9 18\n2 12\n28 31\n5 29\n28 40\n2 30\n32 40\n18 29\n9 11\n17 33\n11 35\n15 17\n13 38\n4 14\n34 42\n36 39\n2 16\n5 33\n13 22\n15 19\n26 28\n13 40\n5 8\n14 29\n",
+      "out": "1\n"
+    },
+    {
+      "in": "43 85 2 30\n15 39\n26 39\n18 35\n40 41\n13 24\n25 43\n12 18\n14 15\n29 34\n22 37\n14 33\n15 16\n15 25\n24 37\n3 8\n12 20\n14 17\n21 41\n23 38\n24 30\n12 13\n22 23\n12 22\n1 3\n33 35\n4 11\n12 24\n12 42\n1 5\n17 32\n19 29\n17 41\n16 21\n12 17\n1 7\n2 6\n36 38\n7 11\n26 27\n3 7\n24 39\n12 19\n1 9\n2 8\n27 37\n5 6\n4 8\n24 41\n23 30\n1 2\n34 36\n1 11\n2 10\n19 26\n28 29\n13 25\n12 14\n4 10\n26 40\n8 10\n20 39\n19 28\n3 4\n18 20\n24 36\n12 16\n9 11\n2 5\n17 24\n34 40\n19 30\n24 38\n25 37\n21 30\n22 31\n2 7\n17 26\n15 19\n13 31\n24 31\n13 40\n5 8\n18 42\n39 40\n27 41\n",
+      "out": "-1\n"
+    }
+  ],
+  "reference": {
+    "py": "ref/py/bfs_shortest.py"
+  },
+  "hints": [
+    {
+      "level": 1,
+      "text": "無重みグラフの最短路は BFS で求まる。"
+    },
+    {
+      "level": 2,
+      "text": "dist 配列を -1 で初期化し、dist[s]=0。未訪問のみキューに入れる。"
+    },
+    {
+      "level": 3,
+      "text": "隣接 to の距離は dist[v]+1。t に到達したら距離が答え。"
+    }
+  ],
+  "distractors": [
+    {
+      "code": "VISIT_MARK_LATE",
+      "desc": "訪問印を遅く付けて多重プッシュ"
+    },
+    {
+      "code": "OFF_BY_ONE",
+      "desc": "距離 +1 や初期値の扱いを誤る"
+    },
+    {
+      "code": "INDEX_BASE_MISMATCH",
+      "desc": "1-indexed/0-indexed を取り違え"
+    }
+  ],
+  "witness": {
+    "shortest_len_t1": 1,
+    "shortest_len_t2": -1
+  },
+  "difficulty": {
+    "score": 0.4,
+    "basis": "BFS on unweighted graph"
+  },
+  "tags": [
+    "graph",
+    "simulation",
+    "beginner"
+  ],
+  "license": "CC BY-SA 4.0 (texts) / MIT (code)"
+}

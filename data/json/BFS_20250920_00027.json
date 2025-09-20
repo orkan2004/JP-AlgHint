@@ -1,0 +1,75 @@
+{
+  "id": "BFS_20250920_00027",
+  "version": "1.0",
+  "lang": "ja",
+  "task_family": "bfs_shortest",
+  "answer_type": "int",
+  "task": "bfs_shortest",
+  "statement_ja": "無向グラフが与えられる。s から t への最短距離（辺数）を出力せよ。到達不能なら -1。",
+  "io_spec": {
+    "input": "n m s t\\n(u v)×m（1-indexed, 無向）",
+    "output": "最短距離または -1"
+  },
+  "instance": {
+    "seed": 27,
+    "template_id": "BFS_T1",
+    "params": {
+      "n": 35
+    }
+  },
+  "tests": [
+    {
+      "in": "35 80 29 15\n1 31\n7 26\n14 22\n22 35\n9 17\n2 11\n17 30\n12 18\n3 33\n14 33\n10 20\n8 32\n25 27\n3 8\n5 32\n1 10\n1 3\n8 27\n1 30\n23 24\n3 21\n14 30\n4 29\n7 9\n11 25\n11 34\n12 26\n23 35\n12 35\n14 32\n8 13\n1 7\n10 19\n19 31\n20 23\n4 6\n29 35\n4 24\n17 18\n10 12\n2 35\n6 17\n15 29\n7 25\n21 33\n4 26\n1 2\n17 20\n22 34\n11 13\n8 26\n9 25\n2 19\n11 31\n18 27\n12 23\n21 35\n1 4\n8 19\n10 16\n9 18\n28 31\n1 34\n4 12\n2 5\n13 20\n24 29\n7 22\n8 14\n11 28\n6 7\n6 16\n16 18\n7 15\n26 28\n5 8\n8 16\n3 29\n14 29\n13 24\n",
+      "out": "1\n"
+    },
+    {
+      "in": "35 82 2 34\n24 33\n28 30\n7 10\n16 31\n20 31\n8 11\n22 28\n9 10\n2 4\n17 23\n6 13\n7 12\n18 30\n5 14\n20 33\n9 12\n16 17\n7 14\n16 26\n18 23\n20 26\n21 34\n23 31\n1 12\n16 19\n20 28\n4 11\n23 24\n23 33\n27 33\n7 9\n3 5\n26 34\n29 33\n20 30\n4 13\n8 13\n17 18\n8 15\n1 9\n19 24\n6 8\n5 6\n18 25\n20 25\n21 33\n1 2\n17 20\n28 29\n24 34\n3 11\n4 10\n21 26\n2 3\n6 12\n24 27\n21 28\n22 29\n2 5\n19 21\n16 25\n18 22\n5 15\n22 31\n9 13\n2 7\n17 26\n28 35\n30 32\n6 7\n16 18\n24 31\n16 27\n18 24\n21 23\n18 33\n5 8\n22 24\n11 12\n2 9\n19 25\n13 15\n",
+      "out": "-1\n"
+    }
+  ],
+  "reference": {
+    "py": "ref/py/bfs_shortest.py"
+  },
+  "hints": [
+    {
+      "level": 1,
+      "text": "無重みグラフの最短路は BFS で求まる。"
+    },
+    {
+      "level": 2,
+      "text": "dist 配列を -1 で初期化し、dist[s]=0。未訪問のみキューに入れる。"
+    },
+    {
+      "level": 3,
+      "text": "隣接 to の距離は dist[v]+1。t に到達したら距離が答え。"
+    }
+  ],
+  "distractors": [
+    {
+      "code": "VISIT_MARK_LATE",
+      "desc": "訪問印を遅く付けて多重プッシュ"
+    },
+    {
+      "code": "OFF_BY_ONE",
+      "desc": "距離 +1 や初期値の扱いを誤る"
+    },
+    {
+      "code": "INDEX_BASE_MISMATCH",
+      "desc": "1-indexed/0-indexed を取り違え"
+    }
+  ],
+  "witness": {
+    "shortest_len_t1": 1,
+    "shortest_len_t2": -1
+  },
+  "difficulty": {
+    "score": 0.4,
+    "basis": "BFS on unweighted graph"
+  },
+  "tags": [
+    "graph",
+    "simulation",
+    "beginner"
+  ],
+  "license": "CC BY-SA 4.0 (texts) / MIT (code)"
+}

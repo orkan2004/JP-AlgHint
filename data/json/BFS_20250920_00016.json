@@ -1,0 +1,75 @@
+{
+  "id": "BFS_20250920_00016",
+  "version": "1.0",
+  "lang": "ja",
+  "task_family": "bfs_shortest",
+  "answer_type": "int",
+  "task": "bfs_shortest",
+  "statement_ja": "無向グラフが与えられる。s から t への最短距離（辺数）を出力せよ。到達不能なら -1。",
+  "io_spec": {
+    "input": "n m s t\\n(u v)×m（1-indexed, 無向）",
+    "output": "最短距離または -1"
+  },
+  "instance": {
+    "seed": 16,
+    "template_id": "BFS_T1",
+    "params": {
+      "n": 18
+    }
+  },
+  "tests": [
+    {
+      "in": "18 41 7 4\n6 15\n3 4\n4 9\n4 6\n4 12\n5 7\n14 16\n8 18\n11 14\n10 12\n2 8\n6 11\n7 10\n6 8\n4 14\n3 6\n5 9\n4 11\n2 4\n1 2\n8 17\n1 5\n1 14\n13 16\n6 7\n15 16\n6 13\n6 16\n16 18\n7 15\n4 10\n9 12\n5 17\n8 16\n10 13\n9 15\n2 3\n1 13\n2 12\n6 9\n7 14\n",
+      "out": "2\n"
+    },
+    {
+      "in": "18 31 1 10\n3 4\n14 16\n8 9\n2 5\n1 3\n10 18\n13 17\n6 11\n7 10\n6 8\n15 17\n4 5\n14 18\n9 10\n2 4\n1 2\n1 5\n10 14\n7 9\n6 7\n6 13\n6 10\n16 18\n7 15\n7 18\n3 5\n8 10\n11 12\n2 3\n6 9\n7 14\n",
+      "out": "-1\n"
+    }
+  ],
+  "reference": {
+    "py": "ref/py/bfs_shortest.py"
+  },
+  "hints": [
+    {
+      "level": 1,
+      "text": "無重みグラフの最短路は BFS で求まる。"
+    },
+    {
+      "level": 2,
+      "text": "dist 配列を -1 で初期化し、dist[s]=0。未訪問のみキューに入れる。"
+    },
+    {
+      "level": 3,
+      "text": "隣接 to の距離は dist[v]+1。t に到達したら距離が答え。"
+    }
+  ],
+  "distractors": [
+    {
+      "code": "VISIT_MARK_LATE",
+      "desc": "訪問印を遅く付けて多重プッシュ"
+    },
+    {
+      "code": "OFF_BY_ONE",
+      "desc": "距離 +1 や初期値の扱いを誤る"
+    },
+    {
+      "code": "INDEX_BASE_MISMATCH",
+      "desc": "1-indexed/0-indexed を取り違え"
+    }
+  ],
+  "witness": {
+    "shortest_len_t1": 2,
+    "shortest_len_t2": -1
+  },
+  "difficulty": {
+    "score": 0.4,
+    "basis": "BFS on unweighted graph"
+  },
+  "tags": [
+    "graph",
+    "simulation",
+    "beginner"
+  ],
+  "license": "CC BY-SA 4.0 (texts) / MIT (code)"
+}

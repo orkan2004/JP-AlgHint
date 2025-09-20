@@ -1,0 +1,75 @@
+{
+  "id": "BFS_20250920_00019",
+  "version": "1.0",
+  "lang": "ja",
+  "task_family": "bfs_shortest",
+  "answer_type": "int",
+  "task": "bfs_shortest",
+  "statement_ja": "無向グラフが与えられる。s から t への最短距離（辺数）を出力せよ。到達不能なら -1。",
+  "io_spec": {
+    "input": "n m s t\\n(u v)×m（1-indexed, 無向）",
+    "output": "最短距離または -1"
+  },
+  "instance": {
+    "seed": 19,
+    "template_id": "BFS_T1",
+    "params": {
+      "n": 30
+    }
+  },
+  "tests": [
+    {
+      "in": "30 71 29 5\n25 29\n16 29\n7 26\n4 6\n21 28\n20 26\n5 10\n14 22\n9 17\n2 5\n2 11\n17 24\n2 24\n17 27\n11 23\n1 12\n13 14\n2 14\n10 21\n10 30\n6 11\n6 20\n7 19\n15 26\n7 28\n15 29\n12 15\n12 18\n14 24\n17 23\n1 2\n4 29\n9 13\n2 7\n19 23\n10 11\n2 10\n5 27\n10 23\n28 29\n2 13\n2 19\n7 9\n6 7\n10 17\n15 16\n7 12\n18 21\n25 30\n7 27\n12 17\n5 11\n12 20\n12 26\n8 16\n1 4\n4 25\n2 3\n14 29\n10 16\n9 18\n9 24\n5 29\n10 19\n8 28\n17 25\n2 15\n2 21\n13 21\n7 8\n1 22\n",
+      "out": "1\n"
+    },
+    {
+      "in": "30 59 22 28\n16 20\n6 21\n26 30\n26 27\n20 23\n5 7\n5 10\n8 9\n5 16\n4 18\n14 22\n8 12\n5 22\n1 3\n27 28\n28 30\n11 17\n17 24\n10 12\n2 23\n13 23\n2 20\n15 17\n1 24\n4 5\n26 29\n5 6\n4 8\n20 25\n3 12\n7 25\n12 18\n4 17\n23 24\n14 21\n5 18\n1 2\n10 11\n9 13\n1 11\n11 19\n28 29\n1 14\n2 13\n15 25\n20 21\n12 17\n5 14\n3 20\n17 19\n1 4\n5 20\n9 21\n2 9\n27 29\n1 16\n13 15\n1 25\n7 14\n",
+      "out": "-1\n"
+    }
+  ],
+  "reference": {
+    "py": "ref/py/bfs_shortest.py"
+  },
+  "hints": [
+    {
+      "level": 1,
+      "text": "無重みグラフの最短路は BFS で求まる。"
+    },
+    {
+      "level": 2,
+      "text": "dist 配列を -1 で初期化し、dist[s]=0。未訪問のみキューに入れる。"
+    },
+    {
+      "level": 3,
+      "text": "隣接 to の距離は dist[v]+1。t に到達したら距離が答え。"
+    }
+  ],
+  "distractors": [
+    {
+      "code": "VISIT_MARK_LATE",
+      "desc": "訪問印を遅く付けて多重プッシュ"
+    },
+    {
+      "code": "OFF_BY_ONE",
+      "desc": "距離 +1 や初期値の扱いを誤る"
+    },
+    {
+      "code": "INDEX_BASE_MISMATCH",
+      "desc": "1-indexed/0-indexed を取り違え"
+    }
+  ],
+  "witness": {
+    "shortest_len_t1": 1,
+    "shortest_len_t2": -1
+  },
+  "difficulty": {
+    "score": 0.4,
+    "basis": "BFS on unweighted graph"
+  },
+  "tags": [
+    "graph",
+    "simulation",
+    "beginner"
+  ],
+  "license": "CC BY-SA 4.0 (texts) / MIT (code)"
+}
