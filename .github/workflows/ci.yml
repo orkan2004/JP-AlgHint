@@ -1,23 +1,28 @@
 ﻿name: CI
 on:
-  push: { branches: [ main ] }
-  pull_request: { branches: [ main ] }
+  push:
+  pull_request:
+
 jobs:
-  validate:
+  validate-json:
+    name: Validate JSON
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Install deps
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-      - name: Validate JSON
-        run: python eval/validate_all.py
-      - name: Check schema sync
-        run: python eval/check_schema_sync.py
-      - name: Check schema sync
-        run: python eval/check_schema_sync.py
+      - run: pip install -r requirements.txt
+      - run: python eval/validate_all.py
 
+  check-schema-sync:
+    name: Check schema sync
+    needs: validate-json
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -r requirements.txt
+      - run: python eval/check_schema_sync.py
