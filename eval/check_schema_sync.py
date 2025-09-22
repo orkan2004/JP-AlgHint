@@ -7,3 +7,4 @@ if a != b:
     sys.exit(1)
 print('schemas are in sync')
 
+
