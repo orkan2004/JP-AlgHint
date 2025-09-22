@@ -6,3 +6,4 @@ if a != b:
     print('docs/schema.json と eval/schema.json が一致しません', file=sys.stderr)
     sys.exit(1)
 print('schemas are in sync')
+
