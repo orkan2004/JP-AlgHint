@@ -56,3 +56,12 @@ jobs:
         run: python eval/score_hl.py || echo "skip score"
       - name: Witness
         run: python eval/verify_witness.py || echo "skip witness"
+      - name: Upload HL-AUC & witness artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-artifacts
+          path: |
+            fig/hl_auc.png
+            eval/hl_auc*.*
+            eval/witness_report.txt
+          if-no-files-found: ignore
