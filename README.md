@@ -8,3 +8,7 @@
 1. ブランチ作成: git switch -c feature/<topic>
 2. 変更 → コミット → git push -u origin feature/<topic>
 3. GitHub で PR を作成（CI が通ったらレビュー＆マージ）
+## Setup
+
+```powershell
+python -m pip install -r requirements.txt

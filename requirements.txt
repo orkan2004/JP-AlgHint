@@ -1,3 +1,4 @@
-﻿jsonschema
-numpy
-jsonschema>=4.0.0
+﻿jsonschema>=4.0.0
+numpy>=1.26
+pandas>=2.0
+matplotlib>=3.7
