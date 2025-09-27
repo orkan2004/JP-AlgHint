@@ -2,3 +2,11 @@
 __pycache__/
 *.pyc
 pytest_cache/
+# eval artifacts
+eval/hl_auc_curve.csv
+eval/hl_auc.txt
+eval/witness_report.txt
+eval/results.csv
+
+# figures
+fig/hl_auc.png
