@@ -37,6 +37,34 @@ def hl_curve_and_auc(df: pd.DataFrame):
         auc = float(np.trapz(ys, x_norm))
     return agg, auc
 
+def add_family_difficulty_curves(df):
+    import numpy as np, matplotlib.pyplot as plt, os
+    os.makedirs("fig", exist_ok=True)
+    if "family" not in df.columns:
+        df["family"] = df["id"].astype(str).str.split("_").str[0]
+
+    def curve_auc(g):
+        agg = g.groupby("level")["passed"].mean().reset_index().sort_values("level")
+        x = agg["level"].to_numpy(float); y = agg["passed"].to_numpy(float)
+        x = x / (x.max() if x.max() > 0 else 1.0)
+        auc = float(np.trapz(y, x))
+        return agg, auc
+
+    for fam, g in df.groupby("family"):
+        agg, auc = curve_auc(g)
+        agg.to_csv(f"eval/hl_auc_curve_{fam}.csv", index=False)
+        plt.figure(); plt.plot(agg["level"], agg["passed"], marker="o")
+        plt.xlabel("Hint Level"); plt.ylabel("Pass Rate"); plt.title(f"{fam} (AUC={auc:.3f})"); plt.grid(True)
+        plt.savefig(f"fig/hl_auc_{fam}.png", bbox_inches="tight")
+
+    if "difficulty" in df.columns:
+        for d, g in df.groupby("difficulty"):
+            agg, auc = curve_auc(g)
+            agg.to_csv(f"eval/hl_auc_curve_diff{d}.csv", index=False)
+            plt.figure(); plt.plot(agg["level"], agg["passed"], marker="o")
+            plt.xlabel("Hint Level"); plt.ylabel("Pass Rate"); plt.title(f"Difficulty {d} (AUC={auc:.3f})"); plt.grid(True)
+            plt.savefig(f"fig/hl_auc_diff{d}.png", bbox_inches="tight")
+
 def main():
     maybe_make_dummy()
     df = pd.read_csv(RESULTS)
@@ -52,6 +80,9 @@ def main():
     plt.title(f"HL Curve (AUC={auc:.3f})")
     plt.grid(True)
     plt.savefig("fig/hl_auc.png", bbox_inches="tight")
+    
+    add_family_difficulty_curves(df)
+    
     print(f"HL-AUC: {auc:.6f}")
     print("Saved: eval/hl_auc_curve.csv, eval/hl_auc.txt, fig/hl_auc.png")
 
