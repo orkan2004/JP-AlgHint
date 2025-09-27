@@ -39,11 +39,11 @@ jobs:
       - name: Check
         run: python eval/check_schema_sync.py
 
-    score-and-verify:
-    name: HL-AUC & witness
-    needs: check-schema-sync
-    runs-on: ubuntu-latest
-    steps:
+  score-and-verify:
+      name: HL-AUC & witness
+      needs: check-schema-sync
+      runs-on: ubuntu-latest
+      steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Set up Python
