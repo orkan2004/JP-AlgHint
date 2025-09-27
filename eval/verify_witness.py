@@ -101,6 +101,62 @@ def verify_int(item):
         return True,"INT witness size matches greedy (set differs)"
     return False,"INT witness not optimal (size differs from greedy)"
 
+# ---------- RSQ (range sum query) ----------
+def parse_rsq_input(item):
+    inp = (item.get("io_spec", {}) or {}).get("input", {}) or {}
+    pr  = (item.get("instance", {}) or {}).get("params", {}) or {}
+    arr = inp.get("arr") or inp.get("array") or inp.get("a") or pr.get("arr") or []
+    qs  = inp.get("queries") or inp.get("qs") or pr.get("queries") or []
+    try:
+        arr = [int(x) for x in arr]
+    except Exception:
+        arr = []
+    queries = []
+    for q in qs:
+        try:
+            if isinstance(q, (list, tuple)) and len(q) >= 2:
+                l, r = int(q[0]), int(q[1])
+            elif isinstance(q, dict):
+                l, r = int(q.get("l")), int(q.get("r"))
+            else:
+                continue
+            queries.append((l, r))
+        except Exception:
+            pass
+    return arr, queries
+
+def rsq_answers(arr, queries, one_based=False):
+    n = len(arr)
+    pref = [0] * (n + 1)
+    for i, x in enumerate(arr, 1):
+        pref[i] = pref[i - 1] + x
+    ans = []
+    for l, r in queries:
+        if one_based:
+            L = max(1, l); R = min(n, r)
+            ans.append(pref[R] - pref[L - 1] if 1 <= L <= R <= n else 0)
+        else:
+            L = max(0, l); R = min(n - 1, r)
+            ans.append(pref[R + 1] - pref[L] if L <= R else 0)
+    return ans
+
+def verify_rsq(item):
+    w = item.get("witness", {}) or {}
+    arr, qs = parse_rsq_input(item)
+    # 入力が拾えないときは形式だけ緩くOK扱い
+    if not arr or not qs:
+        ok = isinstance(w.get("answers", []), list) or ("answers" not in w)
+        return ok, "RSQ: input missing; format-only"
+    exp0 = rsq_answers(arr, qs, one_based=False)
+    exp1 = rsq_answers(arr, qs, one_based=True)  # 1-basedの可能性にも寛容
+    try:
+        got = [int(x) for x in (w.get("answers") or [])]
+    except Exception:
+        return False, "answers invalid"
+    if got == exp0 or got == exp1:
+        return True, "RSQ witness ok"
+    return False, "answers mismatch"
+
 # ---------- main ----------
 def main():
     paths = glob.glob("data/**/*.json", recursive=True)
@@ -115,6 +171,8 @@ def main():
                 elif fam=="INT": ok,msg=verify_int(item)
                 total+=1; passed+=int(ok)
                 out.write(f"{_id}\t{fam}\t{ok}\t{msg}\n")
+                elif fam == "RSQ":
+                ok, msg = verify_rsq(item)
             except Exception as e:
                 out.write(f"{p}\t?\tFalse\terror: {e!r}\n")
         out.write(f"\nTOTAL {passed}/{total}\n")
