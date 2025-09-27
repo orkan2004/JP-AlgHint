@@ -40,10 +40,10 @@ jobs:
         run: python eval/check_schema_sync.py
 
   score-and-verify:
-    name: HL-AUC & witness (non-blocking)
-    needs: check-schema-sync
-    runs-on: ubuntu-latest
-    steps:
+      name: HL-AUC & witness
+      needs: check-schema-sync
+      runs-on: ubuntu-latest
+      steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Set up Python
@@ -53,15 +53,16 @@ jobs:
       - name: Install deps
         run: python -m pip install -r requirements.txt
       - name: HL-AUC
-        run: python eval/score_hl.py || echo "skip score"
+        run: python eval/score_hl.py
       - name: Witness
-        run: python eval/verify_witness.py || echo "skip witness"
+        run: python eval/verify_witness.py
       - name: Upload HL-AUC & witness artifacts
         uses: actions/upload-artifact@v4
         with:
           name: eval-artifacts
           path: |
-            fig/hl_auc.png
+            fig/hl_auc*.png        # ← これを追加（または下の行を置き換え）
+            # fig/hl_auc.png       # ← 残しても良いが、*.png に含まれるので削ってOK
             eval/hl_auc*.*
             eval/witness_report.txt
           if-no-files-found: ignore
