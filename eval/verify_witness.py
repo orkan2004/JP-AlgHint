@@ -160,22 +160,36 @@ def verify_rsq(item):
 # ---------- main ----------
 def main():
     paths = glob.glob("data/**/*.json", recursive=True)
-    total=passed=0; os.makedirs("eval",exist_ok=True)
-    with open("eval/witness_report.txt","w",encoding="utf-8") as out:
+    total = passed = 0
+    os.makedirs("eval", exist_ok=True)
+
+    with open("eval/witness_report.txt", "w", encoding="utf-8") as out:
         for p in paths:
             try:
-                item=json.load(open(p,"r",encoding="utf-8"))
-                _id=item.get("id",""); fam=_id.split("_",1)[0] if "_" in _id else ""
-                ok,msg=True,"skip"
-                if fam=="BFS": ok,msg=verify_bfs(item)
-                elif fam=="INT": ok,msg=verify_int(item)
-                total+=1; passed+=int(ok)
-                out.write(f"{_id}\t{fam}\t{ok}\t{msg}\n")
+                with open(p, "r", encoding="utf-8") as f:
+                    item = json.load(f)
+
+                _id = item.get("id", "")
+                fam = _id.split("_", 1)[0].upper() if "_" in _id else ""
+
+                ok, msg = True, "skip"
+                if fam == "BFS":
+                    ok, msg = verify_bfs(item)
+                elif fam == "INT":
+                    ok, msg = verify_int(item)
                 elif fam == "RSQ":
-                ok, msg = verify_rsq(item)
+                    ok, msg = verify_rsq(item)
+                # 他familyはスキップのまま
+
+                total += 1
+                passed += int(ok)
+                out.write(f"{_id}\t{fam}\t{ok}\t{msg}\n")
+
             except Exception as e:
                 out.write(f"{p}\t?\tFalse\terror: {e!r}\n")
+
         out.write(f"\nTOTAL {passed}/{total}\n")
+
     print(f"Witness check: {passed}/{total}")
 
 if __name__=="__main__": main()
