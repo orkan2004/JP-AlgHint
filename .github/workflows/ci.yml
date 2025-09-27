@@ -39,6 +39,22 @@ jobs:
       - name: Check
         run: python eval/check_schema_sync.py
 
+  unit-tests:
+    name: Unit tests
+    needs: check-schema-sync
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install deps
+        run: python -m pip install -r requirements.txt
+      - name: Run pytest
+        run: pytest -q
+
   score-and-verify:
       name: HL-AUC & witness
       needs: check-schema-sync
