@@ -170,7 +170,7 @@ def main():
                     item = json.load(f)
 
                 _id = item.get("id", "")
-                fam = _id.split("_", 1)[0].upper() if "_" in _id else ""
+                fam = _id.split("_", 1)[0] if "_" in _id else ""
 
                 ok, msg = True, "skip"
                 if fam == "BFS":
@@ -178,8 +178,7 @@ def main():
                 elif fam == "INT":
                     ok, msg = verify_int(item)
                 elif fam == "RSQ":
-                    ok, msg = verify_rsq(item)
-                # 他familyはスキップのまま
+                    ok, msg = verify_rsq(item)  # ← これが必須！
 
                 total += 1
                 passed += int(ok)
@@ -189,7 +188,7 @@ def main():
                 out.write(f"{p}\t?\tFalse\terror: {e!r}\n")
 
         out.write(f"\nTOTAL {passed}/{total}\n")
-
     print(f"Witness check: {passed}/{total}")
+
 
 if __name__=="__main__": main()
