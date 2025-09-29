@@ -1,5 +1,4 @@
-﻿# eval/verify_witness.py
-import json, glob, os, hashlib
+﻿import json, glob, os, hashlib
 from collections import deque
 
 def sha1_hex(xs):
@@ -11,7 +10,7 @@ def pick(d,*keys,default=None):
         if isinstance(d,dict) and k in d: return d[k]
     return default
 
-# ---------- 入力パーサ ----------
+# ----- Graph (unweighted) for BFS -----
 def parse_graph_input(item):
     inp = pick(item,"io_spec",default={}); inp = pick(inp,"input",default=inp) or {}
     pr  = pick(item,"instance",default={}); pr  = pick(pr,"params",default=pr) or {}
@@ -30,19 +29,10 @@ def parse_graph_input(item):
     except: target = None
     return n,edges,src,target,directed
 
-def parse_intervals_input(item):
-    inp = pick(item,"io_spec",default={}); inp = pick(inp,"input",default=inp) or {}
-    pr  = pick(item,"instance",default={}); pr  = pick(pr,"params",default=pr) or {}
-    ints = (pick(inp,"intervals","ranges","segments","tasks") or
-            pick(pr,"intervals","ranges","segments","tasks") or [])
-    try: return [tuple(map(int,x)) for x in ints]
-    except: return []
-
-# ---------- アルゴリズム ----------
 def bfs(n,edges,src=0,directed=False):
     g=[[] for _ in range(n)]
     for a,b in edges:
-        g[a].append(b); 
+        g[a].append(b)
         if not directed: g[b].append(a)
     dist=[-1]*n; parent=[-1]*n; dist[src]=0
     q=deque([src])
@@ -53,14 +43,71 @@ def bfs(n,edges,src=0,directed=False):
                 dist[nx]=dist[v]+1; parent[nx]=v; q.append(nx)
     return dist,parent
 
+# ----- Intervals for INT -----
+def parse_intervals_input(item):
+    inp = pick(item,"io_spec",default={}); inp = pick(inp,"input",default=inp) or {}
+    pr  = pick(item,"instance",default={}); pr  = pick(pr,"params",default=pr) or {}
+    ints = (pick(inp,"intervals","ranges","segments","tasks") or
+            pick(pr,"intervals","ranges","segments","tasks") or [])
+    try: return [tuple(map(int,x)) for x in ints]
+    except: return []
+
 def greedy_select(intervals):
     res=[]; cur=-10**18
     for s,e in sorted(intervals,key=lambda x:(x[1],x[0])):
-        if s>=cur:
-            res.append((s,e)); cur=e
+        if s>=cur: res.append((s,e)); cur=e
     return res
 
-# ---------- familyごとの検証 ----------
+# ----- Weighted graph for MST -----
+def parse_weighted_graph_input(item):
+    inp = pick(item,"io_spec",default={}); inp = pick(inp,"input",default=inp) or {}
+    pr  = pick(item,"instance",default={}); pr  = pick(pr,"params",default=pr) or {}
+    n = pick(inp,"n",default=pick(pr,"n"))
+    edges_w = pick(inp,"edges_w","wedges","edges",default=pick(pr,"edges_w","wedges","edges",default=[]))
+    # 受け付ける形式: [u,v,w] または {"u":..,"v":..,"w":..}
+    parsed=[]
+    try:
+        for e in edges_w:
+            if isinstance(e,(list,tuple)) and len(e)>=3:
+                u,v,w = int(e[0]), int(e[1]), int(e[2])
+            elif isinstance(e,dict):
+                u,v,w = int(e.get("u")), int(e.get("v")), int(e.get("w"))
+            else:
+                continue
+            if u>v: u,v = v,u
+            parsed.append((u,v,int(w)))
+    except Exception:
+        parsed=[]
+    try: n = int(n)
+    except: n = max((max(u,v) for u,v,_ in parsed), default=-1)+1 if parsed else 0
+    return n, parsed
+
+class DSU:
+    def __init__(self,n): self.p=list(range(n)); self.r=[0]*n
+    def f(self,x):
+        while self.p[x]!=x:
+            self.p[x]=self.p[self.p[x]]; x=self.p[x]
+        return x
+    def u(self,a,b):
+        a=self.f(a); b=self.f(b)
+        if a==b: return False
+        if self.r[a]<self.r[b]: a,b=b,a
+        self.p[b]=a
+        if self.r[a]==self.r[b]: self.r[a]+=1
+        return True
+
+def kruskal_mst(n, edges):
+    dsu=DSU(n); total=0; used=[]
+    for u,v,w in sorted(edges, key=lambda x:(x[2],x[0],x[1])):
+        if dsu.u(u,v):
+            total += w
+            used.append((u,v,w))
+    # エッジ集合のハッシュ（順序不変）
+    norm = sorted((min(u,v),max(u,v),int(w)) for u,v,w in used)
+    edges_hash = sha1_hex("|".join(f"{u},{v},{w}" for u,v,w in norm))
+    return total, used, edges_hash
+
+# ----- Family verifiers -----
 def verify_bfs(item):
     w = item.get("witness",{}) or {}
     n,edges,src,target,directed = parse_graph_input(item)
@@ -70,8 +117,7 @@ def verify_bfs(item):
     dist,parent = bfs(n,edges,src=src,directed=directed)
     ok=True; msgs=[]
     if "parent_hash" in w:
-        exp=sha1_hex(parent); got=w.get("parent_hash")
-        if not isinstance(got,str) or got!=exp: ok=False; msgs.append("parent_hash mismatch")
+        if sha1_hex(parent)!=w.get("parent_hash"): ok=False; msgs.append("parent_hash mismatch")
     else:
         msgs.append("parent_hash absent")
     if target is not None and "shortest_len" in w:
@@ -90,16 +136,37 @@ def verify_int(item):
     for s,e in sorted(chosen,key=lambda x:(x[1],x[0])):
         if s<last: return False,"INT overlap found"
         last=e
-    # 入力から最適性を検証（入力が拾えなければ形式のみOK扱い）
+    # 最適性（入力が無ければスキップOK）
     ints = parse_intervals_input(item)
     if not ints: return True,"INT witness ok (input missing; optimality skipped)"
     greedy = greedy_select(ints)
     if set(greedy)==set(chosen):
         return True,"INT witness optimal (matches greedy set)"
-    # Greedy と集合が異なる場合はサイズ一致だけ確認（弱い条件）
     if len(greedy)==len(chosen):
         return True,"INT witness size matches greedy (set differs)"
-    return False,"INT witness not optimal (size differs from greedy)"
+    return False,"INT witness not optimal (size differs)"
+
+def verify_mst(item):
+    w = item.get("witness",{}) or {}
+    n, ew = parse_weighted_graph_input(item)
+    if n<=0 or not ew:
+        # 入力不明なら形式のみ緩く確認
+        ok = isinstance(w.get("total_weight",0),(int,float)) or ("total_weight" not in w)
+        ok = ok and (isinstance(w.get("edges_hash",""),str) or ("edges_hash" not in w))
+        return ok, "MST: input missing; format-only"
+    total, used, edges_hash = kruskal_mst(n, ew)
+    ok=True; msgs=[]
+    if "total_weight" in w:
+        if int(w.get("total_weight")) != int(total):
+            ok=False; msgs.append(f"total_weight mismatch (exp {total}, got {w.get('total_weight')})")
+    else:
+        msgs.append("total_weight absent")
+    if "edges_hash" in w:
+        if w.get("edges_hash") != edges_hash:
+            ok=False; msgs.append("edges_hash mismatch")
+    else:
+        msgs.append("edges_hash absent")
+    return ok, ("; ".join(msgs) if msgs else "MST witness ok")
 
 # ---------- RSQ (range sum query) ----------
 def parse_rsq_input(item):
@@ -178,7 +245,9 @@ def main():
                 elif fam == "INT":
                     ok, msg = verify_int(item)
                 elif fam == "RSQ":
-                    ok, msg = verify_rsq(item)  # ← これが必須！
+                    ok, msg = verify_rsq(item)      # ← RSQ を残す
+                elif fam == "MST":
+                    ok, msg = verify_mst(item)      # ← MST も残す
 
                 total += 1
                 passed += int(ok)
@@ -190,5 +259,5 @@ def main():
         out.write(f"\nTOTAL {passed}/{total}\n")
     print(f"Witness check: {passed}/{total}")
 
-
-if __name__=="__main__": main()
+if __name__ == "__main__":
+    main()
