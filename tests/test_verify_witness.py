@@ -35,6 +35,27 @@ def test_rsq_ok():
     # verify_witness.py は要約のみ標準出力に出す設計なので、summaryで合格を確認
     assert_all_pass(out)
 
+def test_uf_ok():
+    # 0-1-2 を union、(0,2) は連結 = 1、(0,3) は非連結 = 0
+    item = {
+        "id": "UF_20250928_000001",
+        "io_spec": {
+            "input": {
+                "n": 4,
+                "ops": [
+                    ["union", 0, 1],
+                    ["union", 1, 2],
+                    ["connected", 0, 2],
+                    ["connected", 0, 3]
+                ]
+            }
+        },
+        "witness": { "answers": [1, 0] }
+    }
+    out = run_case(item)
+    assert "UF witness ok" in out
+
+
 def test_witness_smoke():
     # 0-1-2 の鎖, src=0, target=2 → dist=2
     parent = [-1, 0, 1]
