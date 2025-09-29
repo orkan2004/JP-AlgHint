@@ -1,4 +1,4 @@
-import json, os, sys, hashlib, subprocess, shutil, re, pathlib
+import json, os, sys, hashlib, subprocess, shutil, re, pathlib, pytest
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 
@@ -63,6 +63,49 @@ def test_witness_smoke():
         "id": "BFS_20250927_00001",
         "io_spec": {"input": {"n": 3, "edges": [[0,1],[1,2]], "src": 0, "target": 2}},
         "witness": {"parent_hash": sha1(parent), "shortest_len": 2},
+    }
+    out = run_case(item)
+    assert_all_pass(out)
+
+# RSQ: 範囲がはみ出すクエリ（負や n 超）や L>R は 0 になること
+@pytest.mark.parametrize(
+    "queries,answers",
+    [
+        ([[-3, -1]], [0]),                       # 全体が左に外れる
+        ([[5, 9]], [0]),                         # 全体が右に外れる（n=4）
+        ([[2, 1]], [0]),                         # 逆順（L>R）→ 0
+        ([[-3, -1], [5, 9], [2, 1]], [0, 0, 0]), # 複数まとめて
+    ],
+)
+def test_rsq_out_of_bounds_zero(queries, answers):
+    item = {
+        "id": "RSQ_20251001_000001",
+        "io_spec": {"input": {"arr": [1, 2, 3, 4], "queries": queries}},
+        "witness": {"answers": answers},
+    }
+    out = run_case(item)
+    assert_all_pass(out)
+
+
+# UF: 1-based 入力でも通ること（verify_uf は 0/1 based を自動判定）
+@pytest.mark.parametrize(
+    "ops,answers",
+    [
+        (
+            [["union", 1, 2], ["union", 2, 3], ["connected", 1, 3], ["connected", 1, 4]],
+            [1, 0],  # 1-2-3 を連結 → (1,3)=連結, (1,4)=非連結
+        ),
+        (
+            [["union", 1, 1], ["connected", 1, 1]],
+            [1],  # 自己連結は True
+        ),
+    ],
+)
+def test_uf_one_based_ok(ops, answers):
+    item = {
+        "id": "UF_20251001_000001",
+        "io_spec": {"input": {"n": 4, "ops": ops}},
+        "witness": {"answers": answers},
     }
     out = run_case(item)
     assert_all_pass(out)
