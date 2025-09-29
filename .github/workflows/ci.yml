@@ -9,65 +9,75 @@ on:
 
 jobs:
   validate-json:
-    name: Validate JSON
+    name: Validate JSON (py ${{ matrix.python-version }})
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
-      - name: Install deps
-        run: python -m pip install -r requirements.txt
-      - name: Validate
-        run: python eval/validate_all.py
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - run: python -m pip install -r requirements.txt
+      - run: python eval/validate_all.py
 
   check-schema-sync:
-    name: Check schema sync
+    name: Check schema sync (py ${{ matrix.python-version }})
     needs: validate-json
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
-      - name: Install deps
-        run: python -m pip install -r requirements.txt
-      - name: Check
-        run: python eval/check_schema_sync.py
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - run: python -m pip install -r requirements.txt
+      - run: python eval/check_schema_sync.py
 
   unit-tests:
-    name: Unit tests
+    name: Unit tests (py ${{ matrix.python-version }})
     needs: check-schema-sync
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
-      - name: Install deps
-        run: python -m pip install -r requirements.txt
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - run: python -m pip install -r requirements.txt
       - name: Run pytest
-        run: pytest -q
+        run: python -m pytest -q
 
   score-and-verify:
-      name: HL-AUC & witness
-      needs: check-schema-sync
-      runs-on: ubuntu-latest
-      steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
+    name: HL-AUC & witness (py ${{ matrix.python-version }})
+    needs: check-schema-sync
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
-      - name: Install deps
-        run: python -m pip install -r requirements.txt
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - run: python -m pip install -r requirements.txt
       - name: HL-AUC
         run: python eval/score_hl.py
       - name: Witness
@@ -77,8 +87,7 @@ jobs:
         with:
           name: eval-artifacts
           path: |
-            fig/hl_auc*.png        # ← これを追加（または下の行を置き換え）
-            # fig/hl_auc.png       # ← 残しても良いが、*.png に含まれるので削ってOK
+            fig/hl_auc*.png
             eval/hl_auc*.*
             eval/witness_report.txt
           if-no-files-found: ignore
