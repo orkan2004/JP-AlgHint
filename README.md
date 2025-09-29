@@ -8,6 +8,16 @@
 1. ブランチ作成: git switch -c feature/<topic>
 2. 変更 → コミット → git push -u origin feature/<topic>
 3. GitHub で PR を作成（CI が通ったらレビュー＆マージ）
+
+[![CI](https://github.com/orkan2004/JP-AlgHint/actions/workflows/ci.yml/badge.svg)](https://github.com/orkan2004/JP-AlgHint/actions/workflows/ci.yml)
+
+### Setup
+```bash
+python -m pip install -r requirements.txt
+python eval/check_schema_sync.py
+python eval/validate_all.py
+
+
 ## Setup
 
 ```powershell
