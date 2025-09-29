@@ -100,30 +100,38 @@ def parse_weighted_graph_input(item):
     except: n = max((max(u,v) for u,v,_ in parsed), default=-1)+1 if parsed else 0
     return n, parsed
 
-class DSU:
-    def __init__(self,n): self.p=list(range(n)); self.r=[0]*n
-    def f(self,x):
-        while self.p[x]!=x:
-            self.p[x]=self.p[self.p[x]]; x=self.p[x]
+# --- ここを置き換え ---
+class DSU_MST:
+    def __init__(self, n):
+        self.p = list(range(n))
+        self.r = [0]*n
+    def f(self, x):
+        while self.p[x] != x:
+            self.p[x] = self.p[self.p[x]]
+            x = self.p[x]
         return x
-    def u(self,a,b):
-        a=self.f(a); b=self.f(b)
-        if a==b: return False
-        if self.r[a]<self.r[b]: a,b=b,a
-        self.p[b]=a
-        if self.r[a]==self.r[b]: self.r[a]+=1
+    def u(self, a, b):
+        a, b = self.f(a), self.f(b)
+        if a == b:
+            return False
+        if self.r[a] < self.r[b]:
+            a, b = b, a
+        self.p[b] = a
+        if self.r[a] == self.r[b]:
+            self.r[a] += 1
         return True
 
 def kruskal_mst(n, edges):
-    dsu=DSU(n); total=0; used=[]
-    for u,v,w in sorted(edges, key=lambda x:(x[2],x[0],x[1])):
-        if dsu.u(u,v):
+    dsu = DSU_MST(n)        # ← DSU → DSU_MST
+    total = 0; used = []
+    for u, v, w in sorted(edges, key=lambda x: (x[2], x[0], x[1])):
+        if dsu.u(u, v):
             total += w
-            used.append((u,v,w))
-    # エッジ集合のハッシュ（順序不変）
-    norm = sorted((min(u,v),max(u,v),int(w)) for u,v,w in used)
-    edges_hash = sha1_hex("|".join(f"{u},{v},{w}" for u,v,w in norm))
+            used.append((u, v, w))
+    norm = sorted((min(u, v), max(u, v), int(w)) for u, v, w in used)
+    edges_hash = sha1_hex("|".join(f"{u},{v},{w}" for u, v, w in norm))
     return total, used, edges_hash
+
 
 # ----- Family verifiers -----
 def verify_bfs(item):
@@ -264,7 +272,8 @@ def parse_uf_input(item):
             pass
     return n, ops
 
-class DSU:
+# --- ここを置き換え ---
+class DSU_UF:
     def __init__(self, n):
         self.p = list(range(n))
         self.r = [0]*n
@@ -275,7 +284,8 @@ class DSU:
         return x
     def union(self, a, b):
         a, b = self.find(a), self.find(b)
-        if a == b: return
+        if a == b:
+            return
         if self.r[a] < self.r[b]:
             a, b = b, a
         self.p[b] = a
@@ -284,8 +294,9 @@ class DSU:
     def same(self, a, b):
         return int(self.find(a) == self.find(b))
 
+
 def uf_answers(n, ops):
-    dsu = DSU(n)
+    dsu = DSU_UF(n)         # ← DSU → DSU_UF
     ans = []
     for typ, u, v in ops:
         if typ in ("union", "unite", "merge"):
@@ -297,6 +308,7 @@ def uf_answers(n, ops):
             else:
                 ans.append(0)
     return ans
+
 
 def verify_uf(item):
     w = item.get("witness", {}) or {}
