@@ -83,11 +83,13 @@ jobs:
       - name: Witness
         run: python eval/verify_witness.py
       - name: Upload HL-AUC & witness artifacts
+        if: always()                   # 失敗しても拾う
         uses: actions/upload-artifact@v4
         with:
-          name: eval-artifacts
+          name: eval-artifacts-py${{ matrix.python-version }}   # ←★ 衝突回避
           path: |
             fig/hl_auc*.png
             eval/hl_auc*.*
             eval/witness_report.txt
           if-no-files-found: ignore
+          retention-days: 7            # 任意
