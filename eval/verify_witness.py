@@ -1,5 +1,8 @@
-﻿import json, glob, os, hashlib
+import json, os, hashlib
 from collections import deque
+from pathlib import Path
+
+DATA_DIR = Path("data")
 
 def sha1_hex(xs):
     s = ",".join(map(str, xs)) if isinstance(xs,(list,tuple)) else str(xs)
@@ -9,6 +12,21 @@ def pick(d,*keys,default=None):
     for k in keys:
         if isinstance(d,dict) and k in d: return d[k]
     return default
+
+def _collect_files():
+    # 1) 環境変数で明示指定（テスト用）
+    only = os.environ.get("ALG_WITNESS_DIR")
+    if only:
+        p = Path(only)
+        return sorted(p.glob("*.json"))
+
+    # 2) テスト一時ディレクトリがあれば最優先
+    tmp = DATA_DIR / "_tmp_unit"
+    if tmp.exists():
+        return sorted(tmp.glob("*.json"))
+
+    # 3) 通常運用：全データ
+    return sorted(DATA_DIR.rglob("*.json"))
 
 # ----- Graph (unweighted) for BFS -----
 def parse_graph_input(item):
@@ -296,14 +314,14 @@ def verify_uf(item):
 
 # ---------- main ----------
 def main():
-    paths = glob.glob("data/**/*.json", recursive=True)
+    paths = _collect_files()  # Pathオブジェクトのリスト
     total = passed = 0
     os.makedirs("eval", exist_ok=True)
 
     with open("eval/witness_report.txt", "w", encoding="utf-8") as out:
         for p in paths:
             try:
-                with open(p, "r", encoding="utf-8") as f:
+                with open(str(p), "r", encoding="utf-8") as f:  # Path対応
                     item = json.load(f)
 
                 _id = item.get("id", "")
