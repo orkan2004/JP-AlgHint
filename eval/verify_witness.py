@@ -1,5 +1,8 @@
-﻿import json, glob, os, hashlib
+import json, os, hashlib
 from collections import deque
+from pathlib import Path
+
+DATA_DIR = Path("data")
 
 def sha1_hex(xs):
     s = ",".join(map(str, xs)) if isinstance(xs,(list,tuple)) else str(xs)
@@ -9,6 +12,21 @@ def pick(d,*keys,default=None):
     for k in keys:
         if isinstance(d,dict) and k in d: return d[k]
     return default
+
+def _collect_files():
+    # 1) 環境変数で明示指定（テスト用）
+    only = os.environ.get("ALG_WITNESS_DIR")
+    if only:
+        p = Path(only)
+        return sorted(p.glob("*.json"))
+
+    # 2) テスト一時ディレクトリがあれば最優先
+    tmp = DATA_DIR / "_tmp_unit"
+    if tmp.exists():
+        return sorted(tmp.glob("*.json"))
+
+    # 3) 通常運用：全データ
+    return sorted(DATA_DIR.rglob("*.json"))
 
 # ----- Graph (unweighted) for BFS -----
 def parse_graph_input(item):
@@ -82,30 +100,38 @@ def parse_weighted_graph_input(item):
     except: n = max((max(u,v) for u,v,_ in parsed), default=-1)+1 if parsed else 0
     return n, parsed
 
-class DSU:
-    def __init__(self,n): self.p=list(range(n)); self.r=[0]*n
-    def f(self,x):
-        while self.p[x]!=x:
-            self.p[x]=self.p[self.p[x]]; x=self.p[x]
+# --- ここを置き換え ---
+class DSU_MST:
+    def __init__(self, n):
+        self.p = list(range(n))
+        self.r = [0]*n
+    def f(self, x):
+        while self.p[x] != x:
+            self.p[x] = self.p[self.p[x]]
+            x = self.p[x]
         return x
-    def u(self,a,b):
-        a=self.f(a); b=self.f(b)
-        if a==b: return False
-        if self.r[a]<self.r[b]: a,b=b,a
-        self.p[b]=a
-        if self.r[a]==self.r[b]: self.r[a]+=1
+    def u(self, a, b):
+        a, b = self.f(a), self.f(b)
+        if a == b:
+            return False
+        if self.r[a] < self.r[b]:
+            a, b = b, a
+        self.p[b] = a
+        if self.r[a] == self.r[b]:
+            self.r[a] += 1
         return True
 
 def kruskal_mst(n, edges):
-    dsu=DSU(n); total=0; used=[]
-    for u,v,w in sorted(edges, key=lambda x:(x[2],x[0],x[1])):
-        if dsu.u(u,v):
+    dsu = DSU_MST(n)        # ← DSU → DSU_MST
+    total = 0; used = []
+    for u, v, w in sorted(edges, key=lambda x: (x[2], x[0], x[1])):
+        if dsu.u(u, v):
             total += w
-            used.append((u,v,w))
-    # エッジ集合のハッシュ（順序不変）
-    norm = sorted((min(u,v),max(u,v),int(w)) for u,v,w in used)
-    edges_hash = sha1_hex("|".join(f"{u},{v},{w}" for u,v,w in norm))
+            used.append((u, v, w))
+    norm = sorted((min(u, v), max(u, v), int(w)) for u, v, w in used)
+    edges_hash = sha1_hex("|".join(f"{u},{v},{w}" for u, v, w in norm))
     return total, used, edges_hash
+
 
 # ----- Family verifiers -----
 def verify_bfs(item):
@@ -229,24 +255,64 @@ def parse_uf_input(item):
     inp = (item.get("io_spec", {}) or {}).get("input", {}) or {}
     pr  = (item.get("instance", {}) or {}).get("params", {}) or {}
     n   = int(inp.get("n") or pr.get("n") or 0)
-    raw = inp.get("ops") or inp.get("queries") or pr.get("ops") or []
+
     ops = []
-    for q in raw:
-        # 形式: ["union", u, v] / ["connected", u, v] もしくは dict
-        try:
-            if isinstance(q, (list, tuple)) and len(q) >= 3:
-                typ, u, v = str(q[0]).lower(), int(q[1]), int(q[2])
-            elif isinstance(q, dict):
-                typ = str(q.get("type") or q.get("op") or "").lower()
-                u, v = int(q.get("u")), int(q.get("v"))
-            else:
-                continue
-            ops.append((typ, u, v))
-        except Exception:
-            pass
+
+    # A) ops 形式（["union", u, v] / ["connected", u, v]）を受理
+    raw_ops = inp.get("ops") or pr.get("ops")
+    if raw_ops:
+        for q in raw_ops:
+            try:
+                if isinstance(q, (list, tuple)) and len(q) >= 3:
+                    typ, u, v = str(q[0]).lower(), int(q[1]), int(q[2])
+                elif isinstance(q, dict):
+                    typ = str(q.get("type") or q.get("op") or "").lower()
+                    u, v = int(q.get("u")), int(q.get("v"))
+                else:
+                    continue
+                ops.append((typ, u, v))
+            except Exception:
+                pass
+    else:
+        # B) unions + queries 形式を受理
+        unions  = inp.get("unions")  or pr.get("unions")  or []
+        queries = inp.get("queries") or pr.get("queries") or []
+        for e in unions:
+            try:
+                if isinstance(e, (list, tuple)) and len(e) >= 2:
+                    u, v = int(e[0]), int(e[1])
+                elif isinstance(e, dict):
+                    u, v = int(e.get("u")), int(e.get("v"))
+                else:
+                    continue
+                ops.append(("union", u, v))
+            except Exception:
+                pass
+        for q in queries:
+            try:
+                if isinstance(q, (list, tuple)) and len(q) >= 3:
+                    typ, u, v = str(q[0]).lower(), int(q[1]), int(q[2])
+                elif isinstance(q, dict):
+                    typ = str(q.get("type") or q.get("op") or "connected").lower()
+                    u, v = int(q.get("u")), int(q.get("v"))
+                else:
+                    continue
+                # “connected” 以外の異名も拾う
+                if typ in ("connected", "same", "query"):
+                    ops.append(("connected", u, v))
+            except Exception:
+                pass
+
+    # C) 1-based を自動吸収（全インデックスが 1..n に入っていて 0 が無いとき）
+    if ops:
+        idxs = [i for _, u, v in ops for i in (u, v)]
+        if idxs and min(idxs) >= 1 and max(idxs) <= n and 0 not in idxs:
+            ops = [(typ, u - 1, v - 1) for typ, u, v in ops]
+
     return n, ops
 
-class DSU:
+# --- ここを置き換え ---
+class DSU_UF:
     def __init__(self, n):
         self.p = list(range(n))
         self.r = [0]*n
@@ -257,7 +323,8 @@ class DSU:
         return x
     def union(self, a, b):
         a, b = self.find(a), self.find(b)
-        if a == b: return
+        if a == b:
+            return
         if self.r[a] < self.r[b]:
             a, b = b, a
         self.p[b] = a
@@ -266,8 +333,9 @@ class DSU:
     def same(self, a, b):
         return int(self.find(a) == self.find(b))
 
+
 def uf_answers(n, ops):
-    dsu = DSU(n)
+    dsu = DSU_UF(n)         # ← DSU → DSU_UF
     ans = []
     for typ, u, v in ops:
         if typ in ("union", "unite", "merge"):
@@ -286,24 +354,34 @@ def verify_uf(item):
     if n <= 0 or not ops:
         ok = isinstance(w.get("answers", []), list) or ("answers" not in w)
         return ok, "UF: input missing; format-only"
+
     exp = uf_answers(n, ops)
+
+    # ここを置換：文字列も吸収
+    def _as_int(x):
+        if isinstance(x, str):
+            t = x.strip().lower()
+            if t in ("yes", "true", "1", "y"): return 1
+            if t in ("no", "false", "0", "n"): return 0
+        return int(x)
+
     try:
-        got = [int(x) for x in (w.get("answers") or [])]
+        got = [_as_int(x) for x in (w.get("answers") or [])]
     except Exception:
         return False, "answers invalid"
-    return (True, "UF witness ok") if got == exp else (False, "answers mismatch")
 
+    return (True, "UF witness ok") if got == exp else (False, "answers mismatch")
 
 # ---------- main ----------
 def main():
-    paths = glob.glob("data/**/*.json", recursive=True)
+    paths = _collect_files()  # Pathオブジェクトのリスト
     total = passed = 0
     os.makedirs("eval", exist_ok=True)
 
     with open("eval/witness_report.txt", "w", encoding="utf-8") as out:
         for p in paths:
             try:
-                with open(p, "r", encoding="utf-8") as f:
+                with open(str(p), "r", encoding="utf-8") as f:  # Path対応
                     item = json.load(f)
 
                 _id = item.get("id", "")
