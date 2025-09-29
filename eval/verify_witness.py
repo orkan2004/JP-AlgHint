@@ -324,6 +324,7 @@ def main():
                 total += 1
                 passed += int(ok)
                 out.write(f"{_id}\t{fam}\t{ok}\t{msg}\n")
+                print(f"{_id}\t{fam}\t{ok}\t{msg}")
 
             except Exception as e:
                 out.write(f"{p}\t?\tFalse\terror: {e!r}\n")
