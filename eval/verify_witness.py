@@ -224,6 +224,76 @@ def verify_rsq(item):
         return True, "RSQ witness ok"
     return False, "answers mismatch"
 
+# ---------- UF (union-find / disjoint set) ----------
+def parse_uf_input(item):
+    inp = (item.get("io_spec", {}) or {}).get("input", {}) or {}
+    pr  = (item.get("instance", {}) or {}).get("params", {}) or {}
+    n   = int(inp.get("n") or pr.get("n") or 0)
+    raw = inp.get("ops") or inp.get("queries") or pr.get("ops") or []
+    ops = []
+    for q in raw:
+        # 形式: ["union", u, v] / ["connected", u, v] もしくは dict
+        try:
+            if isinstance(q, (list, tuple)) and len(q) >= 3:
+                typ, u, v = str(q[0]).lower(), int(q[1]), int(q[2])
+            elif isinstance(q, dict):
+                typ = str(q.get("type") or q.get("op") or "").lower()
+                u, v = int(q.get("u")), int(q.get("v"))
+            else:
+                continue
+            ops.append((typ, u, v))
+        except Exception:
+            pass
+    return n, ops
+
+class DSU:
+    def __init__(self, n):
+        self.p = list(range(n))
+        self.r = [0]*n
+    def find(self, x):
+        while self.p[x] != x:
+            self.p[x] = self.p[self.p[x]]
+            x = self.p[x]
+        return x
+    def union(self, a, b):
+        a, b = self.find(a), self.find(b)
+        if a == b: return
+        if self.r[a] < self.r[b]:
+            a, b = b, a
+        self.p[b] = a
+        if self.r[a] == self.r[b]:
+            self.r[a] += 1
+    def same(self, a, b):
+        return int(self.find(a) == self.find(b))
+
+def uf_answers(n, ops):
+    dsu = DSU(n)
+    ans = []
+    for typ, u, v in ops:
+        if typ in ("union", "unite", "merge"):
+            if 0 <= u < n and 0 <= v < n:
+                dsu.union(u, v)
+        elif typ in ("connected", "same", "query"):
+            if 0 <= u < n and 0 <= v < n:
+                ans.append(dsu.same(u, v))
+            else:
+                ans.append(0)
+    return ans
+
+def verify_uf(item):
+    w = item.get("witness", {}) or {}
+    n, ops = parse_uf_input(item)
+    if n <= 0 or not ops:
+        ok = isinstance(w.get("answers", []), list) or ("answers" not in w)
+        return ok, "UF: input missing; format-only"
+    exp = uf_answers(n, ops)
+    try:
+        got = [int(x) for x in (w.get("answers") or [])]
+    except Exception:
+        return False, "answers invalid"
+    return (True, "UF witness ok") if got == exp else (False, "answers mismatch")
+
+
 # ---------- main ----------
 def main():
     paths = glob.glob("data/**/*.json", recursive=True)
@@ -248,6 +318,8 @@ def main():
                     ok, msg = verify_rsq(item)      # ← RSQ を残す
                 elif fam == "MST":
                     ok, msg = verify_mst(item)      # ← MST も残す
+                elif fam == "UF":
+                    ok, msg = verify_uf(item)
 
                 total += 1
                 passed += int(ok)
