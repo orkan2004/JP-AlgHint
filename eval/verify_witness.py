@@ -255,21 +255,60 @@ def parse_uf_input(item):
     inp = (item.get("io_spec", {}) or {}).get("input", {}) or {}
     pr  = (item.get("instance", {}) or {}).get("params", {}) or {}
     n   = int(inp.get("n") or pr.get("n") or 0)
-    raw = inp.get("ops") or inp.get("queries") or pr.get("ops") or []
+
     ops = []
-    for q in raw:
-        # 形式: ["union", u, v] / ["connected", u, v] もしくは dict
-        try:
-            if isinstance(q, (list, tuple)) and len(q) >= 3:
-                typ, u, v = str(q[0]).lower(), int(q[1]), int(q[2])
-            elif isinstance(q, dict):
-                typ = str(q.get("type") or q.get("op") or "").lower()
-                u, v = int(q.get("u")), int(q.get("v"))
-            else:
-                continue
-            ops.append((typ, u, v))
-        except Exception:
-            pass
+
+    # A) ops 形式（["union", u, v] / ["connected", u, v]）を受理
+    raw_ops = inp.get("ops") or pr.get("ops")
+    if raw_ops:
+        for q in raw_ops:
+            try:
+                if isinstance(q, (list, tuple)) and len(q) >= 3:
+                    typ, u, v = str(q[0]).lower(), int(q[1]), int(q[2])
+                elif isinstance(q, dict):
+                    typ = str(q.get("type") or q.get("op") or "").lower()
+                    u, v = int(q.get("u")), int(q.get("v"))
+                else:
+                    continue
+                ops.append((typ, u, v))
+            except Exception:
+                pass
+    else:
+        # B) unions + queries 形式を受理
+        unions  = inp.get("unions")  or pr.get("unions")  or []
+        queries = inp.get("queries") or pr.get("queries") or []
+        for e in unions:
+            try:
+                if isinstance(e, (list, tuple)) and len(e) >= 2:
+                    u, v = int(e[0]), int(e[1])
+                elif isinstance(e, dict):
+                    u, v = int(e.get("u")), int(e.get("v"))
+                else:
+                    continue
+                ops.append(("union", u, v))
+            except Exception:
+                pass
+        for q in queries:
+            try:
+                if isinstance(q, (list, tuple)) and len(q) >= 3:
+                    typ, u, v = str(q[0]).lower(), int(q[1]), int(q[2])
+                elif isinstance(q, dict):
+                    typ = str(q.get("type") or q.get("op") or "connected").lower()
+                    u, v = int(q.get("u")), int(q.get("v"))
+                else:
+                    continue
+                # “connected” 以外の異名も拾う
+                if typ in ("connected", "same", "query"):
+                    ops.append(("connected", u, v))
+            except Exception:
+                pass
+
+    # C) 1-based を自動吸収（全インデックスが 1..n に入っていて 0 が無いとき）
+    if ops:
+        idxs = [i for _, u, v in ops for i in (u, v)]
+        if idxs and min(idxs) >= 1 and max(idxs) <= n and 0 not in idxs:
+            ops = [(typ, u - 1, v - 1) for typ, u, v in ops]
+
     return n, ops
 
 # --- ここを置き換え ---
@@ -309,20 +348,29 @@ def uf_answers(n, ops):
                 ans.append(0)
     return ans
 
-
 def verify_uf(item):
     w = item.get("witness", {}) or {}
     n, ops = parse_uf_input(item)
     if n <= 0 or not ops:
         ok = isinstance(w.get("answers", []), list) or ("answers" not in w)
         return ok, "UF: input missing; format-only"
+
     exp = uf_answers(n, ops)
+
+    # ここを置換：文字列も吸収
+    def _as_int(x):
+        if isinstance(x, str):
+            t = x.strip().lower()
+            if t in ("yes", "true", "1", "y"): return 1
+            if t in ("no", "false", "0", "n"): return 0
+        return int(x)
+
     try:
-        got = [int(x) for x in (w.get("answers") or [])]
+        got = [_as_int(x) for x in (w.get("answers") or [])]
     except Exception:
         return False, "answers invalid"
-    return (True, "UF witness ok") if got == exp else (False, "answers mismatch")
 
+    return (True, "UF witness ok") if got == exp else (False, "answers mismatch")
 
 # ---------- main ----------
 def main():
